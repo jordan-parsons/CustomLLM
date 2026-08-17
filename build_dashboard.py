@@ -92,10 +92,14 @@ def search6_stats():
                 pass
     attempts = [r for r in rows if "result_n" in r]
     imps = [r for r in rows if r.get("IMPROVED")]
-    log = os.path.join(ROOT, "catalog", "search6.log")
+    logs = [os.path.join(ROOT, "catalog", n) for n in ("search6.log","search7.log")]
     triaged = core_beat = fulls = calls = 0
     finished = 0
-    for line in (open(log) if os.path.exists(log) else []):
+    lines = []
+    for lg in logs:
+        if os.path.exists(lg):
+            lines += open(lg).readlines()
+    for line in lines:
         m = re.search(r"triaged=(\d+) core_beat=(\d+) full=(\d+) imp=(\d+) calls=(\d+)", line)
         if m:
             finished += 1
@@ -351,6 +355,17 @@ ul.tight li{margin:4px 0}
 <section>
   <div class="shead"><h2>Why the search is stuck</h2><div class="rule"></div></div>
   <div class="grid cards" id="search"></div>
+  <div class="note-block" style="margin-bottom:14px">
+    <strong>The cheap filter turned out not to work, and that is reported rather than
+    hidden.</strong> Perturbations were first triaged by UNSAT-core extraction, on the
+    theory that a core already smaller than 510 marks a promising candidate. Measured
+    over the first six full passes: <em>zero</em> cores beat 510, and every full pass
+    was one forced through by the hedge. CaDiCaL's assumption core returns nearly all
+    the assumptions it is given — 518 out of 510+8, 537 out of 510+38 — so it barely
+    reduces. Gating full passes at 1-in-12 was discarding 11 of every 12 informative
+    samples for no signal, so the gate was removed. The honest sampling unit is
+    <em>full passes</em>, not triages.
+  </div>
   <ul class="tight">
     <li>Deletion-MUS run to fixpoint returns each published graph <em>unchanged</em>. All of
       them are already vertex-critical — Heule and Parts ran this minimisation first.</li>

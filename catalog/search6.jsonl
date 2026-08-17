@@ -4,3 +4,9 @@
 {"pool": "P3_ncD6_deg3.json", "seed": 300001, "iter": -1, "n": 510, "pool_n": 2953, "pool_m": 20796}
 {"pool": "P3_nc510_deg3.json", "seed": 300000, "iter": 12, "added": 8, "core_n": 518, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 193.3}
 {"pool": "P5a_super_510.json", "seed": 300002, "iter": -1, "n": 510, "pool_n": 4279, "pool_m": 27948}
+{"pool": "P3_ncD6_deg3.json", "seed": 300001, "iter": 12, "added": 38, "core_n": 537, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 174.5}
+{"pool": "P1d_510_rot_L2.json", "seed": 300003, "iter": -1, "n": 510, "pool_n": 5224, "pool_m": 31401}
+{"pool": "P3_nc510_deg3.json", "seed": 300000, "iter": 24, "added": 7, "core_n": 517, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 399.5}
+{"pool": "P5a_super_510.json", "seed": 300002, "iter": 12, "added": 42, "core_n": 549, "result_n": 515, "best_n": 510, "via": "forced", "elapsed": 208.1}
+{"pool": "P3_ncD6_deg3.json", "seed": 300001, "iter": 24, "added": 5, "core_n": 514, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 351.9}
+{"pool": "P3_nc510_deg3.json", "seed": 400000, "iter": -1, "n": 510, "pool_n": 1712, "pool_m": 11374}

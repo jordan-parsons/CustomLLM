@@ -15,6 +15,15 @@ Two efficiency findings from earlier passes are applied here:
    pass regardless, and both counts are logged so the filter's hit rate stays
    auditable rather than assumed.
 
+   MEASURED RESULT: the core filter does NOT discriminate. Over the first six full
+   passes, ZERO cores beat the incumbent and every full pass was a forced one -
+   CaDiCaL's assumption core returns nearly all the assumptions it was given (518
+   out of 510+8, 537 out of 510+38), so it barely reduces at all. Gating full
+   passes at 1-in-12 was therefore discarding 11 of every 12 informative samples in
+   exchange for no signal. HN_FORCE_FULL now defaults to 1, so every perturbation
+   gets a real pass. The triage is kept only because it is nearly free and does
+   cheaply reject a candidate that turns out to be colourable.
+
 Soundness is unchanged. Search-time solver answers steer the search only; any
 improvement is re-derived from exact coordinates and re-proved by
 verify_candidate.py before it may be called a result.
@@ -36,7 +45,7 @@ from hn.minimizer import MUSReducer, restrict
 from hn.point import Point
 
 OUT = "/home/user/CustomLLM/catalog/search6.jsonl"
-FORCE_FULL = 12
+FORCE_FULL = int(os.environ.get("HN_FORCE_FULL", "1"))
 
 
 def log(rec):
