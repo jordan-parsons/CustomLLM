@@ -1,0 +1,9 @@
+c parsing input formula with 2068 variables and 13935 clauses
+c finished parsing
+c detected empty clause; start verification via backward checking
+c WARNING: RAT check on proof pivot failed : [51873] -1638 -1327 1644 1004 320 1310 254 1616 1514 1620 -741 -1668 1860 1888 0
+c RAT check failed on all possible pivots
+c failed at proof line 12001 (modulo deletion errors)
+
+s NOT VERIFIED
+c verification time: 1.669 seconds

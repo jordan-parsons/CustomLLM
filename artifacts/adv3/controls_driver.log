@@ -1,0 +1,19 @@
+corrupted line 12000
+REC corrupt_517 rc=1 wall=1.677489217 -> s NOT VERIFIED
+kept 25337 of 25837
+REC trunc_517 rc=1 wall=.138526451 -> s NOT VERIFIED
+REC crossgraph_517p_553f rc=1 wall=.138367819 -> s NOT VERIFIED
+REC kissat_517(517-4-sbp.cnf) rc=20 wall=1.727393063 -> s UNSATISFIABLE
+REC ourproof_517 rc=0 wall=1.003207849 -> s VERIFIED
+REC kissat_553(553-4-sbp.cnf) rc=20 wall=2.048922398 -> s UNSATISFIABLE
+REC ourproof_553 rc=0 wall=1.032884833 -> s VERIFIED
+REC kissat_610(610-4-sbp.cnf) rc=20 wall=1.331345130 -> s UNSATISFIABLE
+REC ourproof_610 rc=0 wall=.761288319 -> s VERIFIED
+REC kissat_633(633-4-sbp.cnf) rc=20 wall=1.791578581 -> s UNSATISFIABLE
+REC ourproof_633 rc=0 wall=.966432286 -> s VERIFIED
+REC kissat_803(803-4-sbp.cnf) rc=20 wall=10.583775358 -> s UNSATISFIABLE
+REC ourproof_803 rc=0 wall=7.607618493 -> s VERIFIED
+REC kissat_826(826-4-sbp.cnf) rc=20 wall=6.977233356 -> s UNSATISFIABLE
+REC ourproof_826 rc=0 wall=3.829792513 -> s VERIFIED
+REC kissat_874(874-4-sbp.cnf) rc=20 wall=6.740202540 -> s UNSATISFIABLE
+REC ourproof_874 rc=0 wall=3.267842067 -> s VERIFIED

@@ -39,8 +39,16 @@ def log(rec):
         fh.flush()
 
 
-def minimise_small(pool, idxs, rng, passes=4):
-    """Build a fresh small induced graph on idxs and MUS-reduce to fixpoint."""
+def minimise_small(pool, idxs, rng, passes=4, priority=None):
+    """Build a fresh small induced graph on idxs and MUS-reduce to fixpoint.
+
+    `priority` is a set of pool indices to attempt deleting FIRST. This matters
+    enormously for basin hopping: the incumbent B is vertex-critical, so if the
+    deletion order is uniform over B + added, the few added points get deleted
+    early and the pass collapses straight back to B. Trying B's own vertices
+    first keeps the added constraints in play, which is the only way an incumbent
+    vertex can be revealed as redundant.
+    """
     cur = list(idxs)
     for _ in range(passes):
         sub = UDGraph([pool.points[i] for i in cur], lineage={"op": "induced"})
@@ -49,7 +57,14 @@ def minimise_small(pool, idxs, rng, passes=4):
             if not R.is_unsat(list(range(sub.n))):
                 return None
             keep = R.core_reduce(list(range(sub.n)))
-            keep = R.deletion_mus(keep, rng=rng)
+            order = None
+            if priority:
+                hi = [i for i in keep if cur[i] in priority]
+                lo = [i for i in keep if cur[i] not in priority]
+                rng.shuffle(hi)
+                rng.shuffle(lo)
+                order = hi + lo
+            keep = R.deletion_mus(keep, order=order, rng=rng)
         finally:
             R.close()
         new = [cur[i] for i in sorted(keep)]
@@ -99,13 +114,13 @@ def worker(a):
             break
         cands = list(cnt)
         w = [cnt[v] ** 2 for v in cands]
-        nadd = rng.randint(1, min(14, len(cands)))
+        nadd = rng.randint(4, min(60, len(cands)))
         added = set()
         for _ in range(nadd * 5):
             if len(added) >= nadd:
                 break
             added.add(rng.choices(cands, weights=w, k=1)[0])
-        res = minimise_small(pool, sorted(bs | added), rng)
+        res = minimise_small(pool, sorted(bs | added), rng, priority=set(bs))
         if res is None:
             continue
         if len(res) < len(best):

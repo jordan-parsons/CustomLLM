@@ -148,13 +148,14 @@ def _squarefree_divisors(field: MultiQuadField) -> List[int]:
     return sorted(out)
 
 
-def _sqrt_rational(field: MultiQuadField, q: F):
-    """sqrt(q) as a field element, or None if not expressible. Exact.
+def _sqrt_rational(field: MultiQuadField, q: F, allowed: int):
+    """sqrt(q) inside the subfield spanned by generators in `allowed`, or None.
 
-    sqrt(num/den) = sqrt(num*den)/den, and sqrt(n) lies in the field iff
-    n = s^2 * d for some d dividing prod(gens) squarefree-ly. There are only 2^k
-    such d, so we test those directly instead of factoring n (which can be a
-    several-hundred-digit integer and is not tractable by trial division).
+    sqrt(num/den) = sqrt(num*den)/den, and sqrt(n) lies in the subfield iff
+    n = s^2 * d for some squarefree d that is a product of *allowed* generators.
+    There are only 2^|allowed| such d, so we test those directly instead of
+    factoring n (which can be a several-hundred-digit integer here and is
+    completely intractable by trial division -- the original cause of a hang).
     """
     if q < 0:
         return None
@@ -164,86 +165,101 @@ def _sqrt_rational(field: MultiQuadField, q: F):
 
     num, den = q.numerator, q.denominator
     n = num * den
-    for d in _squarefree_divisors(field):
+    for mask in range(1 << field.k):
+        if mask & ~allowed:
+            continue
+        d = 1
+        for i in range(field.k):
+            if mask >> i & 1:
+                d *= field.gens[i]
         if n % d:
             continue
         m = n // d
         s = isqrt(m)
         if s * s != m:
             continue
-        if d == 1:
-            return field.rational(F(s, den))
-        return field.sqrt_gen(d) * F(s, den)
+        c = [F(0)] * field.dim
+        c[mask] = F(s, den)
+        from .field import FieldElem
+
+        return FieldElem(field, tuple(c))
     return None
 
 
 def field_sqrt(e):
     """Exact square root of `e` inside its own MultiQuadField, or None.
 
-    Algorithm: descent on the highest radical present. Writing e = A + B*sqrt(r)
-    with A, B in the subfield K omitting sqrt(r), any square root in
-    F = K(sqrt(r)) has the form x + y*sqrt(r) with x, y in K, and then
+    Descent on the highest radical present. Writing e = A + B*sqrt(r) with A, B
+    in the subfield K omitting sqrt(r), any square root in F = K(sqrt(r)) has the
+    form x + y*sqrt(r) with x, y in K (the representation is unique because
+    [F:K] = 2), and then
 
         x^2 + r*y^2 = A,   2*x*y = B   =>   x^2 = (A +- sqrt(A^2 - r*B^2)) / 2
 
-    so sqrt(A^2 - r*B^2) must itself lie in K. Recurse. Every returned value is
-    re-verified by exact multiplication (result*result == e) before it is
-    handed back, so a bug here can only ever produce None, never a wrong root.
+    so sqrt(A^2 - r*B^2) must itself lie in K. Recurse *with sqrt(r) forbidden* --
+    that restriction is what makes the recursion terminate (the allowed generator
+    mask strictly shrinks) and is also mathematically required, since x, y must
+    live in K.
+
+    Every value returned at every level is re-verified by exact multiplication
+    (root*root == e), so a bug here can only ever produce None, never a wrong
+    root. Callers therefore never need to trust this function.
     """
+    return _sqrt_in(e, (1 << e.field.k) - 1)
+
+
+def _sqrt_in(e, allowed: int):
     field = e.field
     if e.is_zero():
         return field.zero()
-    if e.sign() < 0:
-        return None
     if e.is_rational():
-        r = _sqrt_rational(field, e.coeffs[0])
+        r = _sqrt_rational(field, e.coeffs[0], allowed)
     else:
-        r = _sqrt_split(e)
-    if r is None:
-        return None
-    if not (r * r == e):  # exact self-certification
+        r = _sqrt_split(e, allowed)
+    if r is None or not (r * r == e):  # exact self-certification at every level
         return None
     return r
 
 
-def _sqrt_split(e):
+def _sqrt_split(e, allowed: int):
+    from .field import FieldElem
+
     field = e.field
-    top = max(s for s, v in enumerate(e.coeffs) if v != 0)
+    support = [s for s, v in enumerate(e.coeffs) if v != 0]
+    top = max(support)
+    if top & ~allowed:  # e is not in the subfield we are allowed to search
+        return None
     i = top.bit_length() - 1
     bit = 1 << i
     r = field.gens[i]
+    sub = allowed & ~bit
     a = [F(0)] * field.dim
     b = [F(0)] * field.dim
-    for s, v in enumerate(e.coeffs):
-        if v == 0:
-            continue
+    for s in support:
+        v = e.coeffs[s]
         if s & bit:
             b[s ^ bit] += v
         else:
             a[s] += v
-    from .field import FieldElem
-
     A = FieldElem(field, tuple(a))
     B = FieldElem(field, tuple(b))
     if B.is_zero():
         return None
     D = A * A - (B * B) * r
-    sD = field_sqrt(D)
+    sD = _sqrt_in(D, sub)
     if sD is None:
         return None
     half = F(1, 2)
+    sr = field.sqrt_gen(r)
     for cand in (A + sD, A - sD):
         x2 = cand * half
         if x2.is_zero():
             continue
-        x = field_sqrt(x2)
+        x = _sqrt_in(x2, sub)
         if x is None:
             continue
-        try:
-            y = (B * half) / x
-        except ZeroDivisionError:
-            continue
-        root = x + field.sqrt_gen(r) * y
+        y = (B * half) / x
+        root = x + sr * y
         if root * root == e:
             return root
     return None
@@ -298,28 +314,103 @@ def detect_pairs_at_sqdist(points: Sequence[Point], target, window: float = 1e-6
 def circle_intersections(a: Point, b: Point):
     """The <=2 points at EXACT distance 1 from both a and b, if they exist in the field.
 
-    With q = |a-b|^2, w = perp(b-a) (so |w|^2 = q) and m = (a+b)/2, the solutions
-    are m +- t*w where t^2 = (4-q)/(4q). Exact throughout: the routine returns []
-    unless (4-q)/(4q) is genuinely a square in the field, and every returned
-    point is re-verified with the exact unit-distance predicate.
+    Let q = |a-b|^2, m = (a+b)/2 and w = perp(b-a) (so |w|^2 = q). Writing the
+    solutions as p = m + (tau/q)*w gives
+
+        |p-a|^2 = q/4 + tau^2/q = 1   <=>   tau^2 = q*(4-q)/4
+
+    so the pair of intersection points exists in the field exactly when
+    q*(4-q)/4 is a square there. Using tau (rather than t = tau/q) means the
+    expensive field inverse is only taken for pairs that actually succeed.
+
+    Exact throughout, and every returned point is re-verified with the exact
+    unit-distance predicate, so a non-unit candidate can never escape.
     """
     field = a.field
     dv = b - a
     q = dv.x * dv.x + dv.y * dv.y
     if q.is_zero():
         return []
-    s = (field.rational(4) - q) / (q * 4)
-    t = field_sqrt(s)
-    if t is None:
+    disc = (q * (field.rational(4) - q)) * F(1, 4)
+    tau = field_sqrt(disc)
+    if tau is None:
         return []
     half = F(1, 2)
     mx, my = (a.x + b.x) * half, (a.y + b.y) * half
-    wx, wy = -dv.y, dv.x
+    if tau.is_zero():           # tangent circles: one solution
+        cands = [Point(mx, my)]
+    else:
+        c = tau / q             # single inverse, only on success
+        wx, wy = -dv.y * c, dv.x * c
+        cands = [Point(mx + wx, my + wy), Point(mx - wx, my - wy)]
     out = []
-    for sg in (1, -1):
-        tt = t if sg > 0 else -t
-        p = Point(mx + tt * wx, my + tt * wy)
-        # EXACT re-verification; a non-unit candidate can never escape.
-        if p.is_unit_from(a) and p.is_unit_from(b):
+    for p in cands:
+        if p.is_unit_from(a) and p.is_unit_from(b):   # EXACT re-verification
             out.append(p)
     return dedup_points(out)
+
+
+def neighbour_completion(
+    base: Sequence[Point], min_degree: int = 2, window: float = 1e-6
+):
+    """Every field point at EXACT unit distance from >= min_degree points of `base`.
+
+    Enumerates the intersection points of the unit circles centred at pairs of
+    `base` (the only points of the plane with >= 2 unit-neighbours in `base`),
+    keeps those that exist exactly in the field, then measures each candidate's
+    exact unit-degree to `base` and filters.
+
+    Floats are used only to skip pairs farther apart than 2 (which provably have
+    no real intersection); the surviving geometry is entirely exact.
+
+    Returns (kept_points, degree_by_key, n_pairs_tried, n_pairs_realised).
+    """
+    n = len(base)
+    ap = [p.approx() for p in base]
+    cand: Dict = {}
+    tried = realised = 0
+    for i in range(n):
+        xi, yi = ap[i]
+        pi = base[i]
+        for j in range(i + 1, n):
+            xj, yj = ap[j]
+            if (xi - xj) ** 2 + (yi - yj) ** 2 > 4.0 + window:
+                continue  # FILTER ONLY: circles of radius 1 cannot meet
+            tried += 1
+            got = circle_intersections(pi, base[j])
+            if got:
+                realised += 1
+            for p in got:
+                cand.setdefault(p.key(), p)
+
+    basekeys = {p.key() for p in base}
+    cands = [p for k, p in cand.items() if k not in basekeys]
+    deg = _degree_to(cands, base, window)
+    kept = [p for p in cands if deg[p.key()] >= min_degree]
+    return kept, deg, tried, realised
+
+
+def _degree_to(cands: Sequence[Point], base: Sequence[Point], window: float = 1e-6):
+    """Exact unit-degree of each candidate towards `base`, via a grid prefilter."""
+    import math
+    from collections import defaultdict
+
+    bk = [p.approx() for p in base]
+    buckets = defaultdict(list)
+    for i, (x, y) in enumerate(bk):
+        buckets[(math.floor(x), math.floor(y))].append(i)
+    deg = {}
+    for p in cands:
+        x, y = p.approx()
+        cx, cy = math.floor(x), math.floor(y)
+        d = 0
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                for j in buckets.get((cx + dx, cy + dy), ()):
+                    xj, yj = bk[j]
+                    if abs((x - xj) ** 2 + (y - yj) ** 2 - 1.0) > window:
+                        continue  # FILTER ONLY
+                    if p.is_unit_from(base[j]):   # EXACT DECISION
+                        d += 1
+        deg[p.key()] = d
+    return deg
