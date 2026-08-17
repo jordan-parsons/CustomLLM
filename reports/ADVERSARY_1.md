@@ -49,8 +49,12 @@ Shares no code with `src/hn/cnf.py`. Deliberate differences:
 5. Solved with **cadical 3.0.1** (pipeline used kissat 4.0.4).
 
 Clause counts are asserted against a closed form, not just printed:
-k=4 → 2040 vars, 14 566 clauses = 510 ALO + 3060 AMO + 10 016 edge.
-k=5 → 2550 vars, 18 130 clauses = 510 ALO + 5100 AMO + 12 520 edge.
+k=4 → 2040 vars, **13 586** clauses = 510 ALO + 3060 AMO + 10 016 edge.
+k=5 → 2550 vars, **18 130** clauses = 510 ALO + 5100 AMO + 12 520 edge.
+(Both confirmed against the emitted `p cnf` headers; the D3 variant is
+2040 vars / 13 582 clauses at 2503 edges.) For contrast the pipeline's CNFs are
+2040/10 529 at k=4 and 2550/13 033 at k=5 — smaller precisely because they omit AMO and
+add 3 SBP units.
 
 ### Exact commands
 
@@ -447,6 +451,7 @@ over-report. The headline k=4 UNSAT is the proof-carrying result.
 | my `adv1_510_k5.cnf` | cadical 3.0.1 | SAT | my own `check_model` | **VALID PROPER COLOURING** |
 | pipeline `heule510.k4.cnf` | kissat (their run) | UNSAT | drat-trim `-f`, **re-run by me** | **s VERIFIED** (2.373 s) |
 | `adv1_510_minus_e1_2_k4.cnf` (2503 edges) | cadical 3.0.1 | UNSAT | drat-trim `-f` | **s VERIFIED** |
+| `adv1_510_minus_e1_2_k4.cnf` | kissat 4.0.4 | UNSAT | — | (cross-check only) |
 | 510 × single-vertex-deletion, k=4 | cadical 3.0.1 | SAT ×510 | — | no proof needed for SAT |
 
 No UNSAT is asserted anywhere in this report without a drat-trim `s VERIFIED`.

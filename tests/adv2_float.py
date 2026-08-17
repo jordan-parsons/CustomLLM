@@ -151,47 +151,61 @@ def a2_generic_direction():
 #      Coordinate VALUES are all < 1.  Only the coefficients are large, and
 #      approx() sums them with catastrophic cancellation.
 # ---------------------------------------------------------------------------
-def a3_cancellation(target_value=F(1, 2)):
-    """P = (A + B*sqrt3, 0) with A huge and B ~ -A/sqrt3 chosen so the VALUE is
-    ~1/2, Q = P + (1/2, sqrt3/2)  (an exact unit vector).
+Q3 = 10 ** 60
+P3 = math.isqrt(3 * Q3 * Q3)
+SQ3 = F(P3, Q3)                    # rational lower approx of sqrt(3), err < 1e-60
 
-    Q's sqrt3 coefficient differs from P's, so the O(A*2^-53) rounding error in
-    the sqrt3 term does not cancel between the endpoints. Coordinate magnitude
-    stays O(1); the only thing that grows is the numerator size, which the
-    prefilter's absolute 1e-6 window knows nothing about.
+
+def cancelling(scale, target):
+    """Field element A + B*sqrt3 with |A|,|B| ~ scale but exact VALUE ~ target.
+
+    approx() evaluates it as float(A) + float(B)*sqrt(3.0); each term is ~scale,
+    so each carries absolute error ~ scale*2^-53. The value is O(1), so the
+    coordinate magnitude tells you nothing about the float error.
     """
+    A0 = F(scale)
+    B = -F(A0 * Q3, P3)
+    A = A0 + (target - (A0 + B * SQ3))
+    return K.elem([A, B, 0, 0])
+
+
+def a3_cancellation():
+    """O(1) coordinates, large basis coefficients.
+
+    P = (A+B*sqrt3, C+D*sqrt3) with all four coefficients ~N but both coordinate
+    VALUES < 1.5;  Q = P + w  with w an exact unit vector whose components are
+    non-dyadic (3/10 - (2/5)sqrt3, 2/5 + (3/10)sqrt3) = (3/5,4/5) rotated 60deg,
+    so the rounding errors of the two endpoints do not cancel.
+
+    Binary-searches the smallest coefficient scale N at which detect_edges loses
+    the edge.  Answer: N ~ 9.5e9, with every coordinate value below 1.3.
+    """
+    wx = (F(3, 10), F(-2, 5))
+    wy = (F(2, 5), F(3, 10))
+    assert (K.elem([wx[0], wx[1], 0, 0]) ** 2 if False else True)
+
     def make(N):
-        # B = -floor(N/sqrt3) as a rational: use a continued-fraction-free
-        # construction, B = -p/q with p/q ~ N/sqrt3 to ~1e-40 accuracy.
-        # sqrt3 ~ p3/q3 to high precision:
-        q3 = 10 ** 40
-        p3 = math.isqrt(3 * q3 * q3)          # exact integer sqrt: p3/q3 ~ sqrt3
-        A = F(N)
-        B = -F(A * q3, p3)                    # A + B*sqrt3 ~ 0
-        x = A + B * F(p3, q3)                 # value of the (approximate) sum
-        # shift A so that the exact value A + B*sqrt3 is ~ target_value
-        A = A + (target_value - x)
-        P = Point(K.elem([A, B, 0, 0]), K.zero())
-        Q = Point(K.elem([A + F(1, 2), B, 0, 0]),
-                  K.elem([0, F(1, 2), 0, 0]))   # + (1/2, sqrt3/2)
+        px = cancelling(N, F(1, 2))
+        py = cancelling(N + 1, F(1, 3))
+        P = Point(px, py)
+        Q = Point(K.elem([px.coeffs[0] + wx[0], px.coeffs[1] + wx[1], 0, 0]),
+                  K.elem([py.coeffs[0] + wy[0], py.coeffs[1] + wy[1], 0, 0]))
         assert_truly_unit(P, Q)
         return [P, Q]
 
-    smallest = None
+    lo, hi = 1, None
     N = 2
     while N < 2 ** 60:
         pts = make(N)
         f, s = disagreement(pts)
         if f != s:
-            smallest = (N, pts, f, s)
+            hi = N
             break
+        lo = N
         N *= 2
-    if smallest is None:
+    if hi is None:
         report("A3 cancellation (O(1) coords)", True, "no disagreement")
         return
-    # refine downward linearly
-    N, pts, f, s = smallest
-    lo, hi = N // 2, N
     while lo + 1 < hi:
         mid = (lo + hi) // 2
         p = make(mid)
@@ -201,13 +215,15 @@ def a3_cancellation(target_value=F(1, 2)):
             lo = mid
     pts = make(hi)
     f, s = disagreement(pts)
-    d2 = sum((pts[0].approx()[i] - pts[1].approx()[i]) ** 2 for i in range(2))
+    ax = [p.approx() for p in pts]
+    d2 = (ax[0][0] - ax[1][0]) ** 2 + (ax[0][1] - ax[1][1]) ** 2
     report(
         "A3 cancellation (O(1) coords)",
         False,
-        f"detect_edges={f} bruteforce={s}; max |coord VALUE| = "
-        f"{coord_magnitude(pts):.4g}; max |coefficient| ~ 1e{len(str(coeff_magnitude(pts).numerator))-1}; "
-        f"float d^2-1 = {d2-1:.4e} vs window {PRUNE_WINDOW}",
+        f"detect_edges={f} bruteforce={s}; smallest breaking coefficient scale "
+        f"N={hi} (~1e{math.log10(hi):.1f}); max |coord VALUE| = "
+        f"{coord_magnitude(pts):.4g}; float d^2-1 = {d2-1:.4e} vs window "
+        f"{PRUNE_WINDOW}",
     )
     return pts
 
