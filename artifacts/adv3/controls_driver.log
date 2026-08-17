@@ -17,3 +17,7 @@ REC kissat_826(826-4-sbp.cnf) rc=20 wall=6.977233356 -> s UNSATISFIABLE
 REC ourproof_826 rc=0 wall=3.829792513 -> s VERIFIED
 REC kissat_874(874-4-sbp.cnf) rc=20 wall=6.740202540 -> s UNSATISFIABLE
 REC ourproof_874 rc=0 wall=3.267842067 -> s VERIFIED
+Terminated
+REC cadical_826 rc=143 wall=511.410466970 -> 
+Terminated
+REC cadicalproof_826 rc=143 wall=16.098947447 -> (none)
