@@ -6,7 +6,7 @@ import hashlib
 import json
 from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 
-from .detect import detect_edges, verify_edges_exact
+from .detect import detect_edges_certified, verify_edges_exact
 from .field import MultiQuadField
 from .point import Point
 
@@ -25,7 +25,6 @@ class UDGraph:
         self,
         points: Sequence[Point],
         lineage: Optional[Dict] = None,
-        edges: Optional[List[Tuple[int, int]]] = None,
     ):
         self.points = list(points)
         if not self.points:
@@ -41,7 +40,13 @@ class UDGraph:
                 f"vertex set contains exact duplicates "
                 f"({len(self.points)} points, {len(keys)} distinct)"
             )
-        self.edges = detect_edges(self.points) if edges is None else sorted(edges)
+        # ADVERSARY-2 FINDING A8: the old `edges=` parameter let a caller supply
+        # an arbitrary edge list. verify_edges_exact only checks that supplied
+        # edges ARE unit, never that all unit pairs were supplied, so edges=[]
+        # built a graph with m=0 and an IDENTICAL coord_hash - and coord_hash is
+        # the catalog's primary key. The parameter is removed: the edge set is a
+        # function of the vertex set and is always derived here.
+        self.edges = detect_edges_certified(self.points)
         # Belt and braces: every edge re-confirmed exactly, always, on construction.
         ok, bad = verify_edges_exact(self.points, self.edges)
         if not ok:

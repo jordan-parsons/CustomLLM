@@ -36,7 +36,7 @@ from __future__ import annotations
 import random
 from typing import Dict, List, Optional, Sequence, Set, Tuple
 
-from .cnf import find_clique_greedy, var
+from .cnf import find_clique_greedy, var, verify_clique
 from .graph import UDGraph
 
 
@@ -65,6 +65,15 @@ def build_mus_encoding(
 
     if break_symmetry:
         clique = find_clique_greedy(n, g.adj, min(k, 3))
+        # ADVERSARY-2 FINDING C2b: pipeline.assess validated its clique but this
+        # path never did. find_clique_greedy reads `adj`; if adj were ever wrong
+        # the pins could manufacture an UNSAT from a colourable graph. Validate
+        # against the exactly-derived edge list before trusting it.
+        if len(clique) >= 2 and not verify_clique(clique, g.edges):
+            raise AssertionError(
+                f"SOUNDNESS ALARM: symmetry-breaking set {clique} is not a clique "
+                "in the exactly-derived edge set"
+            )
         if len(clique) >= 2:
             for i, v in enumerate(clique):
                 clauses.append([-pres[v], var(v, i, k)])

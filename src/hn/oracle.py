@@ -85,7 +85,6 @@ def run_solver(
         raise FileNotFoundError(f"solver binary missing: {binary}")
     cmd = [binary]
     if solver == "kissat":
-        cmd.append("--relaxed")   # tolerate header/clause-count slack
         cmd.append("--no-binary")  # textual DRAT so drat-trim reads it directly
         if seed is not None:
             cmd.append(f"--seed={seed}")
@@ -165,10 +164,32 @@ def run_solver(
 def check_proof(
     cnf_path: str, proof_path: str, timeout: int = 7200
 ) -> Tuple[str, str, float]:
-    """Verify a DRAT proof with drat-trim. Returns (verdict, output_tail, secs)."""
+    """Verify a DRAT proof with drat-trim, defensively.
+
+    ADVERSARY-2 FINDINGS D1b/D1c/D2 are all closed here:
+      * the CNF is strictly validated FIRST, so we never hand drat-trim a
+        malformed file that would send it down the trivial-UNSAT path;
+      * a 0-byte / missing proof is refused outright;
+      * "trivial UNSAT" is NOT accepted as VERIFIED - it means the checker never
+        looked at the proof, which is precisely the hole;
+      * the verdict line must appear ANCHORED at the start of a line, so an
+        external string echoed into a comment (drat-trim echoes file paths and
+        over-long input lines) cannot forge it;
+      * the checker's exit code must agree with the verdict.
+    """
+    from .cnfcheck import CNFMalformed, validate_dimacs
+
     if not os.path.exists(DRAT_TRIM):
         raise FileNotFoundError(f"drat-trim missing: {DRAT_TRIM}")
     t0 = time.time()
+    try:
+        validate_dimacs(cnf_path)
+    except CNFMalformed as e:
+        return ("CNF_MALFORMED", f"refusing to check: {e}", time.time() - t0)
+    if not os.path.exists(proof_path):
+        return ("PROOF_MISSING", "no proof file", time.time() - t0)
+    if os.path.getsize(proof_path) == 0:
+        return ("PROOF_EMPTY", "proof file is 0 bytes", time.time() - t0)
     try:
         proc = subprocess.run(
             [DRAT_TRIM, cnf_path, proof_path, "-U"],
@@ -180,15 +201,22 @@ def check_proof(
         return ("CHECKER_TIMEOUT", "", time.time() - t0)
     secs = time.time() - t0
     text = proc.stdout + proc.stderr
-    if "s VERIFIED" in text:
-        verdict = "VERIFIED"
-    elif "s NOT VERIFIED" in text:
+    lines = [l.strip() for l in text.splitlines()]
+    verified = any(l == "s VERIFIED" for l in lines)
+    not_verified = any(l == "s NOT VERIFIED" for l in lines)
+    trivial = any(l.startswith("c trivial UNSAT") for l in lines)
+
+    if trivial:
+        verdict = "REJECTED_TRIVIAL_UNSAT"
+    elif not_verified:
         verdict = "NOT_VERIFIED"
-    elif "s TRIVIALLY UNSAT" in text:
+    elif verified and proc.returncode == 0:
         verdict = "VERIFIED"
+    elif verified:
+        verdict = "CHECKER_EXITCODE_MISMATCH"
     else:
         verdict = "CHECKER_INCONCLUSIVE"
-    tail = "\n".join(text.strip().splitlines()[-12:])
+    tail = "\n".join(lines[-12:]) + f"\n[exit={proc.returncode}]"
     return (verdict, tail, secs)
 
 

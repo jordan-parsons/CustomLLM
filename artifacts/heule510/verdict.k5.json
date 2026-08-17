@@ -14,7 +14,7 @@
  "solver": "kissat",
  "solver_version": "4.0.4",
  "seed": null,
- "wall_seconds": 0.109,
+ "wall_seconds": 0.044,
  "n_vars": 2550,
  "n_clauses": 13033,
  "proof_path": null,

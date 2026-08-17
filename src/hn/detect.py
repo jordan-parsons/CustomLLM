@@ -121,3 +121,119 @@ def verify_edges_exact(
         if not points[i].is_unit_from(points[j]):
             bad.append((i, j))
     return (len(bad) == 0, bad)
+
+
+# ---------------------------------------------------------------------------
+# CERTIFIED detector (ADVERSARY-2 FINDINGS A1-A4)
+# ---------------------------------------------------------------------------
+# A2 demonstrated that the float prefilter above can MISS an exactly-unit edge:
+# with coefficients around 9.5e9 the pair is lost even though every coordinate
+# satisfies |x| < 1.26, and the grid bucketing breaks at coefficient scale 2^25
+# because math.floor is applied to a float (fl(x)=4.99999999627471 buckets to 4
+# while its true value buckets to 5). Composing the spindle rotation grows
+# denominators like 6^n, which passes 1e12 by n=25, so this is reachable by
+# ordinary construction moves rather than only by adversarial input.
+#
+# The fix removes float from the path entirely. Every coordinate gets a CERTIFIED
+# rational enclosure [lo, hi] built from integer square roots, so:
+#   * bucketing uses floor(lo) on an exact rational. Two points with |dx| <= 1
+#     can differ by at most 2 buckets for ANY enclosure width <= 1, so scanning a
+#     +-2 neighbourhood is unconditionally safe - correctness does not depend on
+#     the precision chosen.
+#   * a pair is discarded only if the certified interval for its squared distance
+#     provably EXCLUDES 1. Precision therefore affects speed, never correctness.
+# Surviving pairs are still confirmed by exact field arithmetic.
+
+from fractions import Fraction as _F
+from math import isqrt as _isqrt
+
+CERT_PREC = 10 ** 60
+
+
+def _radical_bounds(field, prec: int = CERT_PREC):
+    """Certified rational bounds for sqrt of each basis radical."""
+    out = {}
+    for mask in range(field.dim):
+        r = 1
+        for i in range(field.k):
+            if mask >> i & 1:
+                r *= field.gens[i]
+        if r == 1:
+            out[mask] = (_F(1), _F(1))
+        else:
+            root = _isqrt(r * prec * prec)
+            out[mask] = (_F(root, prec), _F(root + 1, prec))
+    return out
+
+
+def certified_bounds(elem, rb):
+    """Certified [lo, hi] with lo <= exact value of `elem` <= hi."""
+    lo = _F(0)
+    hi = _F(0)
+    for s, c in enumerate(elem.coeffs):
+        if c == 0:
+            continue
+        rlo, rhi = rb[s]
+        if c > 0:
+            lo += c * rlo
+            hi += c * rhi
+        else:
+            lo += c * rhi
+            hi += c * rlo
+    return lo, hi
+
+
+def _sq_interval(a: _F, b: _F):
+    """Square of the interval [a, b]."""
+    if a >= 0:
+        return a * a, b * b
+    if b <= 0:
+        return b * b, a * a
+    m = a * a if -a > b else b * b
+    return _F(0), m
+
+
+def detect_edges_certified(points, prec: int = CERT_PREC):
+    """Exact unit-distance detection with a CERTIFIED (float-free) prefilter."""
+    n = len(points)
+    if n == 0:
+        return []
+    rb = _radical_bounds(points[0].field, prec)
+    bounds = []
+    for p in points:
+        xlo, xhi = certified_bounds(p.x, rb)
+        ylo, yhi = certified_bounds(p.y, rb)
+        bounds.append((xlo, xhi, ylo, yhi))
+
+    buckets = defaultdict(list)
+    for i, (xlo, _, ylo, _) in enumerate(bounds):
+        # exact rational floor - no float, no math.floor
+        buckets[(xlo.numerator // xlo.denominator,
+                 ylo.numerator // ylo.denominator)].append(i)
+
+    edges = []
+    seen = set()
+    one = _F(1)
+    for (cx, cy), idxs in buckets.items():
+        neigh = []
+        for dx in (-2, -1, 0, 1, 2):
+            for dy in (-2, -1, 0, 1, 2):
+                neigh.extend(buckets.get((cx + dx, cy + dy), ()))
+        for i in idxs:
+            xilo, xihi, yilo, yihi = bounds[i]
+            for j in neigh:
+                if j <= i or (i, j) in seen:
+                    continue
+                xjlo, xjhi, yjlo, yjhi = bounds[j]
+                dxlo, dxhi = xilo - xjhi, xihi - xjlo
+                dylo, dyhi = yilo - yjhi, yihi - yjlo
+                sxlo, sxhi = _sq_interval(dxlo, dxhi)
+                sylo, syhi = _sq_interval(dylo, dyhi)
+                # discard ONLY if 1 is provably outside [lo, hi]
+                if (sxlo + sylo) > one or (sxhi + syhi) < one:
+                    continue
+                seen.add((i, j))
+                if points[i].is_unit_from(points[j]):
+                    edges.append((i, j))
+    edges.sort()
+    return edges
