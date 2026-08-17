@@ -5,3 +5,5 @@ artifacts/**/*.drat
 artifacts/**/*.cnf
 data/CNP-SAT/
 data/dist-graphs/
+*.lrat
+artifacts/**/*.lrat

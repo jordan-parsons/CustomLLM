@@ -142,6 +142,31 @@ Each failure mode is distinct and diagnostic. Combined with the 6 VERIFIED and 6
 NOT VERIFIED results, our drat-trim build discriminates correctly in both directions on a third
 party's artifacts produced by a different solver on different hardware.
 
+### Second, independently implemented checker: LRAT
+
+drat-trim vouching for itself is weak evidence. So every published proof was also re-checked
+through a **different checker program**: `drat-trim -L` emits an LRAT proof (a resolution-hint
+chain), which is then verified by `lrat-check` — a separate source file with a separate
+verification algorithm (it *follows* given hints instead of searching for them). I built it
+from `vendor/drat-trim/lrat-check.c` to `artifacts/adv3/lrat-check`.
+
+| Graph | CNF | drat-trim -L | LRAT bytes | `lrat-check` verdict | added / deleted clauses |
+|---|---|---|---|---|---|
+| 517 | `517-4-sbp.cnf` | s VERIFIED | 17 181 634 | **c VERIFIED** | 39770 / 39638 |
+| 553 | `553-4-sbp.cnf` | s VERIFIED | 14 543 350 | **c VERIFIED** | 30236 / 30195 |
+| 610 | `610-4-sbp.cnf` | s VERIFIED | 11 387 173 | **c VERIFIED** | 26519 / 26422 |
+| 633 | `633-4-sbp.cnf` | s VERIFIED | 16 072 672 | **c VERIFIED** | 32272 / 32243 |
+| 803 | `803-4-sbp.cnf` | s VERIFIED | 56 274 614 | **c VERIFIED** | — |
+| 529 | `529-4-sbpA.cnf` (recon) | s VERIFIED | 19 008 522 | **c VERIFIED** | — |
+
+Negative control on the second checker: corrupting one antecedent hint id in `517.lrat`
+(line 19689) makes `lrat-check` exit 1 with
+`c FAILED: multiple literals unassigned in hint 131: 521 522`. So `lrat-check` is also not a
+rubber stamp. Logs: `artifacts/adv3/lratgen_*.log`, `artifacts/adv3/lratchk_*.log`,
+`artifacts/adv3/lratchk_517bad.log`.
+
+**All 6 published proofs are therefore VERIFIED by two independently implemented checkers.**
+
 ### Our own solvers on their CNFs (independent of their proofs)
 
 `vendor/kissat` emitting DRAT, verified by our drat-trim (`artifacts/adv3/ctl_ourproof_*.log`):
@@ -407,12 +432,12 @@ outside GitHub (Geombinatorics supplements, the Polymath16 wiki, MathWorld's `Gr
   byte-identical** to `data/CNP-SAT/{vtx,edge}/`.
 * `data/auxiliary_4colorable/{G2167.vtx, L403.*, S199.*, T721.*}` — byte-identical to upstream.
 * `data/auxiliary_4colorable/G2167.edge` and `data/derived/G2167.edge` — **no upstream file
-  exists**; upstream ships `vtx/G2167.vtx` only. These are *our* derivations. Audit:
-  `tests/adv3_derived_g2167.py` → `artifacts/adv3/g2167.log`. `G2167.vtx` parses to **2167
-  lines, 2167 distinct exact points** in Q(√3,√5,√11); the O(n²) exact re-derivation was still
-  running when this report was written — **see `artifacts/adv3/g2167.log` for the final
-  edge-set comparison; treat these two files as UNVERIFIED until that log shows
-  `matches_exact=True`.**
+  exists**; upstream ships `vtx/G2167.vtx` only. These are *our* derivations, so I audited
+  them (`tests/adv3_derived_g2167.py` → `artifacts/adv3/g2167.log`): `G2167.vtx` parses to
+  **2167 lines, 2167 distinct exact points** in Q(√3,√5,√11); O(n²) exact brute force yields
+  **16512 edges**, the grid detector yields the same 16512 (agree = True), and **both local
+  `G2167.edge` files match the exact edge set exactly** (`matches_exact=True`, symmetric
+  difference empty in both directions). **Our derived G2167 edge list is CORRECT.**
 * `data/dist-graphs` — every present file matches `vsvor/dist-graphs`, but
   `plane/series 2/cnf/`, `plane/series 2/dimacs/old/` and `unsolved CNFs/` are **absent
   locally**. Not a soundness issue; the acquisition record should not claim a full mirror.
@@ -421,10 +446,12 @@ outside GitHub (Geombinatorics supplements, the Polymath16 wiki, MathWorld's `Gr
 
 ## What would change these verdicts
 
-* Check A would flip if drat-trim were accepting unsound proofs — the three negative controls
-  argue against that, but they exercise our build, not an independent checker. A second,
-  independently implemented checker (e.g. LRAT via `drat-trim -L` fed to `lrat-check`) has
-  **not** been run; that remains an open gap in this report.
+* Check A would flip if **both** checkers were accepting unsound proofs. Four negative
+  controls (corrupted DRAT, truncated DRAT, cross-graph DRAT, corrupted LRAT hint) argue
+  against that, and the LRAT path is a second, separately implemented algorithm. Residual
+  gap: `lrat-check` ships in the same repository as `drat-trim` and was written by the same
+  group, so it is *independent in implementation* but not *independent in origin*. A checker
+  from an unrelated author (e.g. cake_lpr, a verified LRAT checker) has **not** been run.
 * Check B is as strong as `hn.field`'s canonical-basis equality test. I used it as the oracle
   and did not attempt to break it — that is Adversary 2's lane. I did confirm the grid
   prefilter and the O(n²) exact detector agree on all 9 graphs (≈2 M pairs), which is

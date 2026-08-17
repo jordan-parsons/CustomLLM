@@ -1,0 +1,10 @@
+# LRAT proof artifact manifest (files gitignored for size; hashes are the record)
+
+file                          bytes  sha256
+517.lrat                   17181634  3c41cd4969fdac5ca976e2f9893c2fc29c83a25607c4c385e5d7cfc8e3508441
+517_bad.lrat               17181634  1038f934ff97a842dd5de2b91f75f7e61d43dce85682d6ca9cbf0b029fad559d
+529r.lrat                  19008522  5364651cc6bfbe4618354c892097b4895de42acfe082af97aba7b447d3e7721d
+553.lrat                   14543350  0c162a23b68fc9fc84c3d04f68a8d2c5d56ebbe21d674e643c37ac2cb97e2a23
+610.lrat                   11387173  ad9e7c662d2007ac2cb31e547b19222c9612119a8bfb6b3c4ab465e03502fb26
+633.lrat                   16072672  f6642925164b2471258743fa21cf552d6ef0055c957863e03fbeb1bae97894ce
+803.lrat                   56274614  b3b3b2b727cc64fcf6c5153dab4bbb41f459944372745a24ee2a0a95dcbfb0be
