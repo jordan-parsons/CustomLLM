@@ -3,3 +3,5 @@ __pycache__/
 *.pyc
 artifacts/**/*.drat
 artifacts/**/*.cnf
+data/CNP-SAT/
+data/dist-graphs/
