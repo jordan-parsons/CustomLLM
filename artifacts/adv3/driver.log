@@ -1,0 +1,14 @@
+DONE 517_sbp rc=0 wall=2.897601297 verdict=s VERIFIED
+DONE 553_sbp rc=0 wall=1.130713960 verdict=s VERIFIED
+DONE 610_sbp rc=0 wall=.842876090 verdict=s VERIFIED
+DONE 633_sbp rc=0 wall=1.222421492 verdict=s VERIFIED
+DONE 517_plain rc=1 wall=.153843370 verdict=s NOT VERIFIED
+DONE 553_plain rc=1 wall=.166370910 verdict=s NOT VERIFIED
+DONE 610_plain rc=1 wall=.153584589 verdict=s NOT VERIFIED
+DONE 633_plain rc=1 wall=.193523523 verdict=s NOT VERIFIED
+DONE 529_plain rc=1 wall=.167714002 verdict=s NOT VERIFIED
+DONE 529_reconA rc=0 wall=4.321659771 verdict=s VERIFIED
+DONE 529_reconB rc=0 wall=3.336784780 verdict=s VERIFIED
+DONE 803_sbp rc=0 wall=6.980858715 verdict=s VERIFIED
+DONE 803_plain rc=1 wall=1.143629260 verdict=s NOT VERIFIED
+ALL RUNS COMPLETE

@@ -1,0 +1,13 @@
+517_sbp	517-4-sbp.cnf	517-4-sbp.drat	0	2.897601297	s VERIFIED
+553_sbp	553-4-sbp.cnf	553-4-sbp.drat	0	1.130713960	s VERIFIED
+610_sbp	610-4-sbp.cnf	610-4-sbp.drat	0	.842876090	s VERIFIED
+633_sbp	633-4-sbp.cnf	633-4-sbp.drat	0	1.222421492	s VERIFIED
+517_plain	517-4.cnf	517-4-sbp.drat	1	.153843370	s NOT VERIFIED
+553_plain	553-4.cnf	553-4-sbp.drat	1	.166370910	s NOT VERIFIED
+610_plain	610-4.cnf	610-4-sbp.drat	1	.153584589	s NOT VERIFIED
+633_plain	633-4.cnf	633-4-sbp.drat	1	.193523523	s NOT VERIFIED
+529_plain	529-4.cnf	529-4-sbp.drat	1	.167714002	s NOT VERIFIED
+529_reconA	529-4-sbpA.cnf	529-4-sbp.drat	0	4.321659771	s VERIFIED
+529_reconB	529-4-sbpB.cnf	529-4-sbp.drat	0	3.336784780	s VERIFIED
+803_sbp	803-4-sbp.cnf	803-4-sbp.drat	0	6.980858715	s VERIFIED
+803_plain	803-4.cnf	803-4-sbp.drat	1	1.143629260	s NOT VERIFIED

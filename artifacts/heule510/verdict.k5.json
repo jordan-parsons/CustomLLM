@@ -1,0 +1,48 @@
+{
+ "tag": "heule510",
+ "k": 5,
+ "n": 510,
+ "m": 2504,
+ "graph_hash": "009be06703f94bcf5127949db139c49f8656e2f830ce437c13fa937f73c92afb",
+ "coord_hash": "5cc16bb4faf7dcf78350f12e17023a90c27de0132374317df9d4e17400c39d2c",
+ "field": [
+  3,
+  5,
+  11
+ ],
+ "verdict": "SAT",
+ "solver": "kissat",
+ "solver_version": "4.0.4",
+ "seed": null,
+ "wall_seconds": 0.048,
+ "n_vars": 2550,
+ "n_clauses": 13033,
+ "proof_path": null,
+ "proof_sha256": null,
+ "proof_bytes": 23170,
+ "checker": null,
+ "checker_verdict": null,
+ "checker_seconds": null,
+ "encoding_justifications": [
+  "at-least-one-colour per vertex: required for the encoding to express a total colouring. Sound by definition.",
+  "edge constraints: for every exactly-confirmed unit-distance edge (u,v) and colour c, forbid both endpoints from taking c. Sound by definition of proper colouring.",
+  "at-most-one-colour per vertex OMITTED. Sound: given any satisfying assignment, choose for each vertex one colour whose variable is true (exists by the ALO clause); no edge can then be monochromatic because the edge clauses forbid any shared true colour. So SAT of this encoding is equivalent to k-colourability, in both directions.",
+  "symmetry breaking: vertices [0, 25, 30] form a clique of size 3 (verified pairwise-adjacent in the exactly-derived edge set); they are pinned to distinct colours 0..2. SOUND because the colour classes are interchangeable: any proper k-colouring can be composed with a permutation of colours sending the clique's colours to 0..len-1, and a clique forces its members to pairwise-distinct colours, so this eliminates only symmetric duplicates and preserves satisfiability in both directions."
+ ],
+ "symmetry_fixed": {
+  "0": 0,
+  "25": 1,
+  "30": 2
+ },
+ "notes": [],
+ "cnf_path": "/home/user/CustomLLM/artifacts/heule510/heule510.k5.cnf",
+ "model_check": {
+  "ok": true,
+  "n": 510,
+  "edges_found_exactly": 2504,
+  "k": 5,
+  "colors_used": 5,
+  "bad_edges": [],
+  "problems": []
+ }
+}

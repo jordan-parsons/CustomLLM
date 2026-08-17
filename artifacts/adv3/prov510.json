@@ -1,0 +1,69 @@
+{
+  "n_510": 510,
+  "distinct_510": 510,
+  "our_exact_edges_510": 2504,
+  "their_edge_file_510": 2504,
+  "edges_agree": true,
+  "min_degree_510": 4,
+  "n_deg_lt_4_510": 0,
+  "overlap": {
+    "517": {
+      "n": 517,
+      "shared_exact_points": 479,
+      "510_is_subset": false
+    },
+    "529": {
+      "n": 529,
+      "shared_exact_points": 468,
+      "510_is_subset": false
+    },
+    "553": {
+      "n": 553,
+      "shared_exact_points": 385,
+      "510_is_subset": false
+    },
+    "610": {
+      "n": 610,
+      "shared_exact_points": 204,
+      "510_is_subset": false
+    },
+    "633": {
+      "n": 633,
+      "shared_exact_points": 389,
+      "510_is_subset": false
+    },
+    "803": {
+      "n": 803,
+      "shared_exact_points": 231,
+      "510_is_subset": false
+    },
+    "826": {
+      "n": 826,
+      "shared_exact_points": 224,
+      "510_is_subset": false
+    },
+    "874": {
+      "n": 874,
+      "shared_exact_points": 239,
+      "510_is_subset": false
+    },
+    "G2167": {
+      "n": 2167,
+      "shared_exact_points": 373,
+      "510_is_subset": false
+    },
+    "L403": {
+      "n": 403,
+      "shared_exact_points": 375,
+      "510_is_subset": false
+    },
+    "T721": {
+      "error": "/home/user/CustomLLM/data/CNP-SAT/vtx/T721.vtx:4: sqrt(2) is not expressible: leftover factor 2 is not a product of distinct generators (3, 5, 11) in '{-1/12*((-2 + Sqrt[2])*(-3 + Sqrt[3])), (-6 + 3*Sqrt[2] + 2*Sqrt[3] + Sqrt[6])/12}'"
+    },
+    "S199": {
+      "n": 199,
+      "shared_exact_points": 143,
+      "510_is_subset": false
+    }
+  }
+}

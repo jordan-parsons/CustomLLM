@@ -1,0 +1,109 @@
+========================================================================
+GRAPH 517
+  vtx lines = 517, field = Q(sqrt3, sqrt5, sqrt11)
+  distinct exact points = 517
+  our exact edges (brute force O(n^2)) = 2579
+  our grid-prefilter detector          = 2579  agree=True
+  their edge/517.edge: n=517 m=2579  match_our_exact=True
+  their 517-4.cnf: header p cnf 2068 13935, actual 13935 clauses, 13935 distinct
+  their CNF implies 2579 edges; per-colour counts {0: 2579, 1: 2579, 2: 2579, 3: 2579}; identical across colours = True
+  their CNF: 517 ALO clauses, 3102 AMO clauses
+  *** their CNF edge set == our exact edge set : True
+  our CNF: p cnf 2068 10833 (10833 distinct)
+  *** clause SET identical to theirs : False
+      only in ours   (0): {}
+      only in theirs (3102): {'AMO(same vertex)': 3102}
+========================================================================
+GRAPH 529
+  vtx lines = 529, field = Q(sqrt3, sqrt5, sqrt11)
+  distinct exact points = 529
+  our exact edges (brute force O(n^2)) = 2670
+  our grid-prefilter detector          = 2670  agree=True
+  their edge/529.edge: n=529 m=2670  match_our_exact=True
+  their 529-4.cnf: header p cnf 2116 11209, actual 11209 clauses, 11209 distinct
+  their CNF implies 2670 edges; per-colour counts {0: 2670, 1: 2670, 2: 2670, 3: 2670}; identical across colours = True
+  their CNF: 529 ALO clauses, 0 AMO clauses
+  *** their CNF edge set == our exact edge set : True
+  our CNF: p cnf 2116 11209 (11209 distinct)
+  *** clause SET identical to theirs : True
+========================================================================
+GRAPH 553
+  vtx lines = 553, field = Q(sqrt3, sqrt5, sqrt11)
+  distinct exact points = 553
+  our exact edges (brute force O(n^2)) = 2722
+  our grid-prefilter detector          = 2722  agree=True
+  their edge/553.edge: n=553 m=2722  match_our_exact=True
+  their 553-4.cnf: header p cnf 2212 11441, actual 11441 clauses, 11441 distinct
+  their CNF implies 2722 edges; per-colour counts {0: 2722, 1: 2722, 2: 2722, 3: 2722}; identical across colours = True
+  their CNF: 553 ALO clauses, 0 AMO clauses
+  *** their CNF edge set == our exact edge set : True
+  our CNF: p cnf 2212 11441 (11441 distinct)
+  *** clause SET identical to theirs : True
+========================================================================
+GRAPH 610
+  vtx lines = 610, field = Q(sqrt3, sqrt5, sqrt11)
+  distinct exact points = 610
+  our exact edges (brute force O(n^2)) = 3000
+  our grid-prefilter detector          = 3000  agree=True
+  their edge/610.edge: n=610 m=3000  match_our_exact=True
+  their 610-4.cnf: header p cnf 2440 12610, actual 12610 clauses, 12610 distinct
+  their CNF implies 3000 edges; per-colour counts {0: 3000, 1: 3000, 2: 3000, 3: 3000}; identical across colours = True
+  their CNF: 610 ALO clauses, 0 AMO clauses
+  *** their CNF edge set == our exact edge set : True
+  our CNF: p cnf 2440 12610 (12610 distinct)
+  *** clause SET identical to theirs : True
+========================================================================
+GRAPH 633
+  vtx lines = 633, field = Q(sqrt3, sqrt5, sqrt11)
+  distinct exact points = 633
+  our exact edges (brute force O(n^2)) = 3166
+  our grid-prefilter detector          = 3166  agree=True
+  their edge/633.edge: n=633 m=3166  match_our_exact=True
+  their 633-4.cnf: header p cnf 2532 13297, actual 13297 clauses, 13297 distinct
+  their CNF implies 3166 edges; per-colour counts {0: 3166, 1: 3166, 2: 3166, 3: 3166}; identical across colours = True
+  their CNF: 633 ALO clauses, 0 AMO clauses
+  *** their CNF edge set == our exact edge set : True
+  our CNF: p cnf 2532 13297 (13297 distinct)
+  *** clause SET identical to theirs : True
+========================================================================
+GRAPH 803
+  vtx lines = 803, field = Q(sqrt3, sqrt5, sqrt11)
+  distinct exact points = 803
+  our exact edges (brute force O(n^2)) = 4144
+  our grid-prefilter detector          = 4144  agree=True
+  their edge/803.edge: n=803 m=4144  match_our_exact=True
+  their 803-4.cnf: header p cnf 3212 17379, actual 17379 clauses, 17379 distinct
+  their CNF implies 4144 edges; per-colour counts {0: 4144, 1: 4144, 2: 4144, 3: 4144}; identical across colours = True
+  their CNF: 803 ALO clauses, 0 AMO clauses
+  *** their CNF edge set == our exact edge set : True
+  our CNF: p cnf 3212 17379 (17379 distinct)
+  *** clause SET identical to theirs : True
+========================================================================
+GRAPH 826
+  vtx lines = 826, field = Q(sqrt3, sqrt5, sqrt11)
+  distinct exact points = 826
+  our exact edges (brute force O(n^2)) = 4273
+  our grid-prefilter detector          = 4273  agree=True
+  their edge/826.edge: n=826 m=4273  match_our_exact=True
+  their 826-4.cnf: header p cnf 3304 17918, actual 17918 clauses, 17918 distinct
+  their CNF implies 4273 edges; per-colour counts {0: 4273, 1: 4273, 2: 4273, 3: 4273}; identical across colours = True
+  their CNF: 826 ALO clauses, 0 AMO clauses
+  *** their CNF edge set == our exact edge set : True
+  our CNF: p cnf 3304 17918 (17918 distinct)
+  *** clause SET identical to theirs : True
+========================================================================
+GRAPH 874
+  vtx lines = 874, field = Q(sqrt3, sqrt5, sqrt11)
+  distinct exact points = 874
+  our exact edges (brute force O(n^2)) = 4461
+  our grid-prefilter detector          = 4461  agree=True
+  their edge/874.edge: n=874 m=4461  match_our_exact=True
+  their 874-4.cnf: header p cnf 3496 18718, actual 18718 clauses, 18718 distinct
+  their CNF implies 4461 edges; per-colour counts {0: 4461, 1: 4461, 2: 4461, 3: 4461}; identical across colours = True
+  their CNF: 874 ALO clauses, 0 AMO clauses
+  *** their CNF edge set == our exact edge set : True
+  our CNF: p cnf 3496 18718 (18718 distinct)
+  *** clause SET identical to theirs : True
+========================================================================
+NO ALARMS
+wrote /home/user/CustomLLM/artifacts/adv3/checkB.json
