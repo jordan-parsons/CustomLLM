@@ -1,1 +1,4 @@
 G2167.vtx: 2167 lines, 2167 distinct exact points, field Q(sqrt3, sqrt5, sqrt11)
+exact brute force edges = 16512;  grid detector = 16512;  agree = True
+/home/user/CustomLLM/data/auxiliary_4colorable/G2167.edge: header n=2167, m=16512, matches_exact=True
+/home/user/CustomLLM/data/derived/G2167.edge: header n=2167, m=16512, matches_exact=True
