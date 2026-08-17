@@ -140,27 +140,41 @@ def contains_keys(points: Sequence[Point], keys) -> Tuple[int, int]:
 # ---------------------------------------------------------------------------
 # Exact square roots inside a multiquadratic field
 # ---------------------------------------------------------------------------
+def _squarefree_divisors(field: MultiQuadField) -> List[int]:
+    """The 2^k products of distinct generators - the only radicands the field has."""
+    out = [1]
+    for g in field.gens:
+        out += [d * g for d in out]
+    return sorted(out)
+
+
 def _sqrt_rational(field: MultiQuadField, q: F):
-    """sqrt(q) as a field element, or None if not expressible. Exact."""
+    """sqrt(q) as a field element, or None if not expressible. Exact.
+
+    sqrt(num/den) = sqrt(num*den)/den, and sqrt(n) lies in the field iff
+    n = s^2 * d for some d dividing prod(gens) squarefree-ly. There are only 2^k
+    such d, so we test those directly instead of factoring n (which can be a
+    several-hundred-digit integer and is not tractable by trial division).
+    """
     if q < 0:
         return None
     if q == 0:
         return field.zero()
+    from math import isqrt
+
     num, den = q.numerator, q.denominator
-    n = num * den  # sqrt(num/den) = sqrt(num*den)/den
-    s, d, p = 1, n, 2
-    while p * p <= d:
-        while d % (p * p) == 0:
-            d //= p * p
-            s *= p
-        p += 1
-    if d == 1:
-        return field.rational(F(s, den))
-    try:
-        g = field.sqrt_gen(d)
-    except ValueError:
-        return None
-    return g * F(s, den)
+    n = num * den
+    for d in _squarefree_divisors(field):
+        if n % d:
+            continue
+        m = n // d
+        s = isqrt(m)
+        if s * s != m:
+            continue
+        if d == 1:
+            return field.rational(F(s, den))
+        return field.sqrt_gen(d) * F(s, den)
+    return None
 
 
 def field_sqrt(e):

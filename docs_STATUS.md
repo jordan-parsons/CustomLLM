@@ -86,3 +86,26 @@ about, so it was not attempted.
 - Nothing at or below 509 found. No 6-chromatic unit-distance graph is known.
 - CAUTION recorded: adjacent problems (two-distance, odd-distance graphs) do
   reach chromatic number 6 and must not be conflated with the unit-distance case.
+
+## Vertex-criticality of the whole published corpus (measured, not assumed)
+Randomised deletion-MUS to fixpoint on each published 5-chromatic graph returns
+the graph itself:
+
+| start | result | conclusion |
+|---|---|---|
+| 510 | 510 | vertex-critical |
+| 517 | 517 | vertex-critical |
+| 529 | 529 | vertex-critical |
+| 553 | 553 | vertex-critical |
+
+Plus the exhaustive per-vertex scan on 510: all 510 single-deletion tests return
+4-colourable, and the k=4 UNSAT core is the entire vertex set.
+
+**Consequence.** Every published starting graph is already a local minimum under
+vertex deletion. Heule and Parts already did this minimisation, so no amount of
+deletion-only search can improve on them. The ONLY route to <= 508 from this
+corpus is to first ENLARGE the vertex set with ambient points and then delete
+more than we added (basin hopping). That reframes Objective A from a
+minimisation problem into a *construction* problem, contradicting the spec's
+section 7 claim that "beating 509 is a minimization problem, not a construction
+problem" - at least when starting from already-minimised published graphs.
