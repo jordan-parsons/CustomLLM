@@ -1,0 +1,59 @@
+{"pool": "P3_nc510_deg3.json", "seed": 300000, "iter": -1, "n": 510, "pool_n": 1712, "pool_m": 11374}
+{"pool": "P3_nc510_deg3.json", "seed": 300000, "iter": 12, "added": 8, "core_n": 518, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 186.0}
+{"pool": "P3_nc510_deg3.json", "seed": 300000, "iter": -1, "n": 510, "pool_n": 1712, "pool_m": 11374}
+{"pool": "P3_ncD6_deg3.json", "seed": 300001, "iter": -1, "n": 510, "pool_n": 2953, "pool_m": 20796}
+{"pool": "P3_nc510_deg3.json", "seed": 300000, "iter": 12, "added": 8, "core_n": 518, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 193.3}
+{"pool": "P5a_super_510.json", "seed": 300002, "iter": -1, "n": 510, "pool_n": 4279, "pool_m": 27948}
+{"pool": "P3_ncD6_deg3.json", "seed": 300001, "iter": 12, "added": 38, "core_n": 537, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 174.5}
+{"pool": "P1d_510_rot_L2.json", "seed": 300003, "iter": -1, "n": 510, "pool_n": 5224, "pool_m": 31401}
+{"pool": "P3_nc510_deg3.json", "seed": 300000, "iter": 24, "added": 7, "core_n": 517, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 399.5}
+{"pool": "P5a_super_510.json", "seed": 300002, "iter": 12, "added": 42, "core_n": 549, "result_n": 515, "best_n": 510, "via": "forced", "elapsed": 208.1}
+{"pool": "P3_ncD6_deg3.json", "seed": 300001, "iter": 24, "added": 5, "core_n": 514, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 351.9}
+{"pool": "P3_nc510_deg3.json", "seed": 400000, "iter": -1, "n": 510, "pool_n": 1712, "pool_m": 11374}
+{"pool": "P3_ncD6_deg3.json", "seed": 400001, "iter": -1, "n": 510, "pool_n": 2953, "pool_m": 20796}
+{"pool": "P3_nc510_deg3.json", "seed": 400000, "iter": 1, "added": 13, "core_n": 523, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 143.7}
+{"pool": "P5a_super_510.json", "seed": 400002, "iter": -1, "n": 510, "pool_n": 4279, "pool_m": 27948}
+{"pool": "P3_ncD6_deg3.json", "seed": 400001, "iter": 1, "added": 10, "core_n": 519, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 155.9}
+{"pool": "P3_nc510_deg3.json", "seed": 400000, "iter": 2, "added": 31, "core_n": 534, "result_n": 511, "best_n": 510, "via": "forced", "elapsed": 293.7}
+{"pool": "P5a_super_510.json", "seed": 400002, "iter": 1, "added": 15, "core_n": 524, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 124.5}
+{"pool": "P3_ncD6_deg3.json", "seed": 400001, "iter": 2, "added": 31, "core_n": 535, "result_n": 512, "best_n": 510, "via": "forced", "elapsed": 296.7}
+{"pool": "P1d_510_rot_L2.json", "seed": 400003, "iter": -1, "n": 510, "pool_n": 5224, "pool_m": 31401}
+{"pool": "P3_nc510_deg3.json", "seed": 400000, "iter": 3, "added": 43, "core_n": 550, "result_n": 513, "best_n": 510, "via": "forced", "elapsed": 459.6}
+{"pool": "P5a_super_510.json", "seed": 400002, "iter": 2, "added": 37, "core_n": 543, "result_n": 512, "best_n": 510, "via": "forced", "elapsed": 268.7}
+{"pool": "P3_ncD6_deg3.json", "seed": 400001, "iter": 3, "added": 29, "core_n": 534, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 430.6}
+{"pool": "P1d_510_rot_L2.json", "seed": 400003, "iter": 1, "added": 34, "core_n": 539, "result_n": 516, "best_n": 510, "via": "forced", "elapsed": 158.9}
+{"pool": "P5a_super_510.json", "seed": 400002, "iter": 3, "added": 13, "core_n": 522, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 419.8}
+{"pool": "P3_nc510_deg3.json", "seed": 400000, "iter": 4, "added": 43, "core_n": 550, "result_n": 514, "best_n": 510, "via": "forced", "elapsed": 619.1}
+{"pool": "P3_ncD6_deg3.json", "seed": 400001, "iter": 4, "added": 41, "core_n": 542, "result_n": 513, "best_n": 510, "via": "forced", "elapsed": 570.9}
+{"pool": "P1d_510_rot_L2.json", "seed": 400003, "iter": 2, "added": 19, "core_n": 526, "result_n": 511, "best_n": 510, "via": "forced", "elapsed": 297.4}
+{"pool": "P5a_super_510.json", "seed": 400002, "iter": 4, "added": 20, "core_n": 526, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 570.2}
+{"pool": "P3_nc510_deg3.json", "seed": 400000, "iter": 5, "added": 33, "core_n": 539, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 779.8}
+{"pool": "P3_ncD6_deg3.json", "seed": 400001, "iter": 5, "added": 44, "core_n": 549, "result_n": 511, "best_n": 510, "via": "forced", "elapsed": 721.0}
+{"pool": "P1d_510_rot_L2.json", "seed": 400003, "iter": 3, "added": 20, "core_n": 529, "result_n": 513, "best_n": 510, "via": "forced", "elapsed": 450.9}
+{"pool": "P5a_super_510.json", "seed": 400002, "iter": 5, "added": 30, "core_n": 537, "result_n": 511, "best_n": 510, "via": "forced", "elapsed": 717.0}
+{"pool": "P3_nc510_deg3.json", "seed": 400000, "iter": 6, "added": 11, "core_n": 518, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 924.2}
+{"pool": "P3_ncD6_deg3.json", "seed": 400001, "iter": 6, "added": 9, "core_n": 517, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 856.3}
+{"pool": "P1d_510_rot_L2.json", "seed": 400003, "iter": 4, "added": 8, "core_n": 517, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 582.8}
+{"pool": "P5a_super_510.json", "seed": 400002, "iter": 6, "added": 6, "core_n": 515, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 853.8}
+{"pool": "P3_ncD6_deg3.json", "seed": 400001, "iter": 7, "added": 25, "core_n": 531, "result_n": 511, "best_n": 510, "via": "forced", "elapsed": 990.5}
+{"pool": "P3_nc510_deg3.json", "seed": 400000, "iter": 7, "added": 25, "core_n": 532, "result_n": 513, "best_n": 510, "via": "forced", "elapsed": 1069.3}
+{"pool": "P1d_510_rot_L2.json", "seed": 400003, "iter": 5, "added": 15, "core_n": 523, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 716.3}
+{"pool": "P5a_super_510.json", "seed": 400002, "iter": 7, "added": 31, "core_n": 535, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 991.2}
+{"pool": "P3_ncD6_deg3.json", "seed": 400001, "iter": 8, "added": 32, "core_n": 536, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 1133.0}
+{"pool": "P3_nc510_deg3.json", "seed": 400000, "iter": 8, "added": 21, "core_n": 529, "result_n": 511, "best_n": 510, "via": "forced", "elapsed": 1205.0}
+{"pool": "P1d_510_rot_L2.json", "seed": 400003, "iter": 6, "added": 11, "core_n": 520, "result_n": 512, "best_n": 510, "via": "forced", "elapsed": 854.9}
+{"pool": "P5a_super_510.json", "seed": 400002, "iter": 8, "added": 27, "core_n": 532, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 1131.0}
+{"pool": "P3_nc510_deg3.json", "seed": 400000, "iter": 9, "added": 34, "core_n": 537, "result_n": 513, "best_n": 510, "via": "forced", "elapsed": 1339.9}
+{"pool": "P1d_510_rot_L2.json", "seed": 400003, "iter": 7, "added": 33, "core_n": 538, "result_n": 512, "best_n": 510, "via": "forced", "elapsed": 985.5}
+{"pool": "P3_ncD6_deg3.json", "seed": 400001, "iter": 9, "added": 38, "core_n": 543, "result_n": 512, "best_n": 510, "via": "forced", "elapsed": 1304.3}
+{"pool": "P3_nc510_deg3.json", "seed": 400000, "iter": 10, "added": 3, "core_n": 512, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 1465.3}
+{"pool": "P5a_super_510.json", "seed": 400002, "iter": 9, "added": 27, "core_n": 535, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 1281.7}
+{"pool": "P1d_510_rot_L2.json", "seed": 400003, "iter": 8, "added": 13, "core_n": 522, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 1127.1}
+{"pool": "P3_ncD6_deg3.json", "seed": 400001, "iter": 10, "added": 16, "core_n": 523, "result_n": 511, "best_n": 510, "via": "forced", "elapsed": 1482.1}
+{"pool": "P3_nc510_deg3.json", "seed": 400000, "iter": 11, "added": 39, "core_n": 544, "result_n": 513, "best_n": 510, "via": "forced", "elapsed": 1584.9}
+{"pool": "P5a_super_510.json", "seed": 400002, "iter": 10, "added": 35, "core_n": 537, "result_n": 512, "best_n": 510, "via": "forced", "elapsed": 1418.2}
+{"pool": "P1d_510_rot_L2.json", "seed": 400003, "iter": 9, "added": 38, "core_n": 542, "result_n": 513, "best_n": 510, "via": "forced", "elapsed": 1272.5}
+{"pool": "P3_ncD6_deg3.json", "seed": 400001, "iter": 11, "added": 31, "core_n": 535, "result_n": 513, "best_n": 510, "via": "forced", "elapsed": 1601.7}
+{"pool": "P5a_super_510.json", "seed": 400002, "iter": 11, "added": 6, "core_n": 514, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 1549.9}
+{"pool": "P1d_510_rot_L2.json", "seed": 400003, "iter": 10, "added": 9, "core_n": 518, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 1408.9}
+{"pool": "P1d_510_rot_L2.json", "seed": 400003, "iter": 11, "added": 16, "core_n": 524, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 1547.2}

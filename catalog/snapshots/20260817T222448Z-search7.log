@@ -1,0 +1,4 @@
+rd0 P3_nc510_deg3.json seed=400000 n=510 triaged=11 core_beat=0 full=11 imp=0 calls=11582 wall=1584.9 BEST=510
+rd0 P3_ncD6_deg3.json seed=400001 n=510 triaged=11 core_beat=0 full=11 imp=0 calls=11575 wall=1601.7 BEST=510
+rd0 P5a_super_510.json seed=400002 n=510 triaged=11 core_beat=0 full=11 imp=0 calls=11523 wall=1549.9 BEST=510
+rd0 P1d_510_rot_L2.json seed=400003 n=510 triaged=11 core_beat=0 full=11 imp=0 calls=11513 wall=1547.2 BEST=510
