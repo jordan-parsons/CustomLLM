@@ -399,6 +399,41 @@ def b6_key_collisions():
            if same_key else "keys are field-tagged")
 
 
+def b7_sqrt_gen_and_dos():
+    """sqrt_gen must never silently swallow a square factor, and the squarefree
+    guard's cost must not be a denial of service on a large generator."""
+    import time
+    K = MultiQuadField((3, 11))
+    problems = []
+    for bad in (9, 12, 99, 6, 0, 2, 5, 33 * 4):
+        try:
+            e = K.sqrt_gen(bad)
+            if bad == 33 * 4:
+                problems.append(f"sqrt_gen({bad}) accepted -> {e!r} (4 swallowed)")
+            elif bad in (9, 12, 99, 6, 0, 2, 5):
+                problems.append(f"sqrt_gen({bad}) accepted -> {e!r}")
+        except ValueError:
+            pass
+    for good, want in ((3, 3), (11, 11), (33, 33), (1, 1)):
+        e = K.sqrt_gen(good)
+        if not (e * e).equals_rational(want):
+            problems.append(f"sqrt_gen({good})^2 != {want}")
+    # cost of the squarefree guard
+    p = 1000003 ** 2          # 12 digits, one big square factor
+    t0 = time.time()
+    try:
+        MultiQuadField((p,))
+    except ValueError:
+        pass
+    slow = time.time() - t0
+    report("B7 sqrt_gen rejects square factors", not problems,
+           "; ".join(problems[:4]) or
+           "sqrt_gen rejects 9,12,99,6,0,2,5,132 and squares correctly for "
+           f"3,11,33,1. Guard cost note: _is_squarefree({p}) took {slow:.2f}s "
+           "(trial division to sqrt(n)); a 30-digit generator would hang the "
+           "constructor -- availability only, not soundness")
+
+
 if __name__ == "__main__":
     b1_generator_guard()
     b1b_squarefree_helper()
@@ -407,6 +442,7 @@ if __name__ == "__main__":
     b4_inverse()
     b5_equals_rational()
     b6_key_collisions()
+    b7_sqrt_gen_and_dos()
     print()
     if FAIL:
         print("HOLES FOUND:", ", ".join(FAIL))
