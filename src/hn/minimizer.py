@@ -188,3 +188,59 @@ class MUSReducer:
             trial = [u for u in cur if u != v]
             out[v] = self.is_unsat(trial)  # True => v is redundant, removable
         return out
+
+
+class SubGraph:
+    """Abstract induced subgraph of an already-certified pool.
+
+    The pool's edge set was derived once by the CERTIFIED detector. The edge set
+    of an induced subgraph is then determined with no geometry at all:
+
+        E(G[S]) = { (u,v) in E(G) : u in S and v in S }
+
+    That is an identity, not a detection, so re-running a detector on every
+    candidate subset is pure waste - and with the certified detector it was
+    costing ~4s per candidate. Restriction is O(m) integer work.
+
+    Soundness is unaffected: the geometry was certified once, at pool
+    construction, and every reported hit is re-derived from exact coordinates by
+    verify_candidate.py (certified detector AND brute-force all-pairs) before it
+    may be called a result.
+    """
+
+    __slots__ = ("n", "edges", "_adj", "index")
+
+    def __init__(self, n, edges, index=None):
+        self.n = n
+        self.edges = edges
+        self.index = index          # local -> pool index
+        self._adj = None
+
+    @property
+    def m(self):
+        return len(self.edges)
+
+    @property
+    def adj(self):
+        if self._adj is None:
+            a = [[] for _ in range(self.n)]
+            for (u, v) in self.edges:
+                a[u].append(v)
+                a[v].append(u)
+            self._adj = a
+        return self._adj
+
+
+def restrict(pool_edges_by_vertex, keep):
+    """Build the induced SubGraph on `keep` from a pool adjacency structure."""
+    keep = sorted(keep)
+    pos = {v: i for i, v in enumerate(keep)}
+    ks = set(keep)
+    edges = []
+    for v in keep:
+        iv = pos[v]
+        for u in pool_edges_by_vertex[v]:
+            if u > v and u in ks:
+                edges.append((iv, pos[u]))
+    edges.sort()
+    return SubGraph(len(keep), edges, index=keep)
