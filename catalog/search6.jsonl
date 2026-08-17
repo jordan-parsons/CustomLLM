@@ -1,1 +1,3 @@
 {"pool": "P3_nc510_deg3.json", "seed": 300000, "iter": -1, "n": 510, "pool_n": 1712, "pool_m": 11374}
+{"pool": "P3_nc510_deg3.json", "seed": 300000, "iter": 12, "added": 8, "core_n": 518, "result_n": 510, "best_n": 510, "via": "forced", "elapsed": 186.0}
+{"pool": "P3_nc510_deg3.json", "seed": 300000, "iter": -1, "n": 510, "pool_n": 1712, "pool_m": 11374}

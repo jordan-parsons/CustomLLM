@@ -80,6 +80,34 @@ def drat_table():
     return rows
 
 
+def search6_stats():
+    """Triage telemetry from the two-tier search: sampling rate + filter hit rate."""
+    rows = []
+    p = os.path.join(ROOT, "catalog", "search6.jsonl")
+    if os.path.exists(p):
+        for line in open(p):
+            try:
+                rows.append(json.loads(line))
+            except Exception:
+                pass
+    attempts = [r for r in rows if "result_n" in r]
+    imps = [r for r in rows if r.get("IMPROVED")]
+    log = os.path.join(ROOT, "catalog", "search6.log")
+    triaged = core_beat = fulls = calls = 0
+    finished = 0
+    for line in (open(log) if os.path.exists(log) else []):
+        m = re.search(r"triaged=(\d+) core_beat=(\d+) full=(\d+) imp=(\d+) calls=(\d+)", line)
+        if m:
+            finished += 1
+            triaged += int(m.group(1)); core_beat += int(m.group(2))
+            fulls += int(m.group(3)); calls += int(m.group(5))
+    return {"triaged": triaged, "core_beat": core_beat, "full_passes": fulls,
+            "solver_calls": calls, "workers_done": finished,
+            "improvements": len(imps),
+            "best": min([r["n"] for r in rows if r.get("n")] or [510]),
+            "full_pass_results": [r["result_n"] for r in attempts]}
+
+
 def main():
     g = read_json(os.path.join(ROOT, "dashboard", "graph510.json"))
     st = read_json(os.path.join(ROOT, "dashboard", "state.json"))
@@ -98,6 +126,7 @@ def main():
         "adversaries": adversary_findings(),
         "drat": drat_table(),
         "lrat": _lrat(),
+        "s6": search6_stats(),
     }
     html = TEMPLATE.replace("__DATA__", json.dumps(payload, separators=(",", ":")))
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
@@ -419,10 +448,13 @@ const ok='<span class="pill p-ok">present</span>', no='<span class="pill p-bad">
   $("#corp").tBodies[0].append(tr);});
 
 /* ---- search cards ---- */
-const sc=S.search||{};
+const s6=D.s6||{}; const sc=S.search||{};
 [{k:"Ambient pools built",v:(S.pools||[]).length,n:"exact, all round-trip verified"},
- {k:"Perturbation attempts",v:sc.attempts||0,n:"each = a full deletion pass"},
- {k:"Improvements found",v:sc.improvements||0,n:"below the 510 incumbent"},
+ {k:"Perturbations triaged",v:(s6.triaged||0)+(sc.attempts||0),n:"two-tier search, cheap core filter first"},
+ {k:"Cores beating 510",v:s6.core_beat==null?"—":s6.core_beat,n:"promising enough for a full pass"},
+ {k:"Full deletion passes",v:s6.full_passes||0,n:"the expensive tier"},
+ {k:"Solver calls",v:(s6.solver_calls||0).toLocaleString(),n:"search-time; steer only, never a verdict"},
+ {k:"Improvements found",v:(s6.improvements||0)+(sc.improvements||0),n:"below the 510 incumbent"},
  {k:"Largest pool",v:Math.max.apply(null,[0].concat((S.pools||[]).map(p=>p.n))),n:"points, exact coordinates"}
 ].forEach(c=>{const d=el("div","card");
   d.append(el("div","k",c.k),el("div","big",String(c.v)),el("div","note",c.n));
