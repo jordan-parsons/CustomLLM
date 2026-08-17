@@ -37,6 +37,8 @@ CREATE TABLE IF NOT EXISTS attempts (
   wall_seconds REAL, n_vars INTEGER, n_clauses INTEGER,
   proof_path TEXT, proof_sha256 TEXT, proof_bytes INTEGER,
   checker TEXT, checker_verdict TEXT, checker_seconds REAL,
+  checked_sha256 TEXT, checked_bytes INTEGER,
+  archived_sha256 TEXT, archived_bytes INTEGER,
   encoding_justifications TEXT, symmetry_fixed TEXT,
   model_check TEXT, notes TEXT, created_at REAL NOT NULL
 );
@@ -93,14 +95,17 @@ def record_attempt(con: sqlite3.Connection, rec: Dict) -> int:
         "INSERT INTO attempts (coord_hash,graph_hash,n_vertices,k,verdict,solver,"
         "solver_version,seed,wall_seconds,n_vars,n_clauses,proof_path,proof_sha256,"
         "proof_bytes,checker,checker_verdict,checker_seconds,"
+        "checked_sha256,checked_bytes,archived_sha256,archived_bytes,"
         "encoding_justifications,symmetry_fixed,model_check,notes,created_at)"
-        " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         (
             rec["coord_hash"], rec["graph_hash"], rec["n"], rec["k"], rec["verdict"],
             rec.get("solver"), rec.get("solver_version"), rec.get("seed"),
             rec.get("wall_seconds"), rec.get("n_vars"), rec.get("n_clauses"),
             rec.get("proof_path"), rec.get("proof_sha256"), rec.get("proof_bytes"),
             rec.get("checker"), rec.get("checker_verdict"), rec.get("checker_seconds"),
+            rec.get("checked_sha256"), rec.get("checked_bytes"),
+            rec.get("archived_sha256"), rec.get("archived_bytes"),
             json.dumps(rec.get("encoding_justifications")),
             json.dumps(rec.get("symmetry_fixed")),
             json.dumps(rec.get("model_check")),
@@ -130,7 +135,8 @@ def leaderboard(con: sqlite3.Connection, k: int = 4, limit: int = 20) -> List[Di
     """Smallest VERIFIED non-k-colourable graphs. Verified-only, by construction."""
     cur = con.execute(
         "SELECT n_vertices,coord_hash,graph_hash,proof_sha256,proof_bytes,solver,"
-        "checker,checker_verdict,wall_seconds FROM attempts"
+        "checker,checker_verdict,wall_seconds,archived_sha256,archived_bytes"
+        " FROM attempts"
         " WHERE k=? AND verdict='UNSAT' AND checker_verdict='VERIFIED'"
         " ORDER BY n_vertices ASC LIMIT ?",
         (k, limit),

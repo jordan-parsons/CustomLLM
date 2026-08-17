@@ -62,6 +62,10 @@ class SolveResult:
     checker_verdict: Optional[str] = None
     checker_seconds: Optional[float] = None
     checker_output: Optional[str] = None
+    checked_sha256: Optional[str] = None
+    checked_bytes: Optional[int] = None
+    archived_sha256: Optional[str] = None
+    archived_bytes: Optional[int] = None
     notes: List[str] = dc_field(default_factory=list)
 
     @property
@@ -212,19 +216,36 @@ def solve_and_verify(
         if verdict != "VERIFIED":
             res.verdict = "UNSAT_UNVERIFIED"
             res.notes.append(f"drat-trim did not verify: {verdict}")
-        # hash and archive the exact bytes that were checked
-        res.proof_sha256 = sha256_file(proof_path)
-        res.proof_bytes = os.path.getsize(proof_path)
+        # Hash the exact bytes the checker consumed. ADVERSARY-1 FINDING D1:
+        # previously proof_sha256/proof_bytes described the uncompressed DRAT
+        # while proof_path named the .gz, so re-hashing the named file
+        # mismatched. Both artifacts are now recorded separately and
+        # unambiguously, and `proof_path` always names the file that
+        # `archived_sha256` hashes.
+        res.checked_sha256 = sha256_file(proof_path)
+        res.checked_bytes = os.path.getsize(proof_path)
+        res.proof_sha256 = res.checked_sha256
+        res.proof_bytes = res.checked_bytes
         if compress_proof:
             gz = proof_path + ".gz"
             with open(proof_path, "rb") as fi, gzip.open(gz, "wb", compresslevel=6) as fo:
                 shutil.copyfileobj(fi, fo)
             os.remove(proof_path)
             res.proof_path = gz
+            res.archived_sha256 = sha256_file(gz)
+            res.archived_bytes = os.path.getsize(gz)
+        else:
+            res.archived_sha256 = res.checked_sha256
+            res.archived_bytes = res.checked_bytes
     elif res.verdict == "UNSAT":
         res.verdict = "UNSAT_UNVERIFIED"
         res.notes.append("no proof file produced")
     elif proof_path and os.path.exists(proof_path):
+        # ADVERSARY-1 FINDING D2: a SAT answer has no proof, so every
+        # proof-related field must be cleared rather than left describing a
+        # partial DRAT log that was deleted.
         os.remove(proof_path)
         res.proof_path = None
+        res.proof_bytes = None
+        res.proof_sha256 = None
     return res

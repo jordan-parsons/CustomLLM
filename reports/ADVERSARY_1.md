@@ -75,9 +75,28 @@ vendor/drat-trim/drat-trim  artifacts/adv1/adv1_510_k4.cnf \
 - **cadical exit 20, `s UNSATISFIABLE`, 111.1 s.**
 - Proof `artifacts/adv1/adv1_510_k4.cadical.drat` — **330 646 444 bytes**, sha256
   `cf4affe60a8f076e6291544b932ab658d1df08b10c19bf97842067b00aa0189d`.
-- **drat-trim forward mode (`-f`): `s VERIFIED`, exit 0, 182.5 s.**
+- **drat-trim forward mode (`-f`): `s VERIFIED`, exit 0, 182.471 s.**
   Log: `artifacts/adv1/adv1_510_k4.drattrim.log` (426 B, sha256
   `a379c3124237c2f75aa202091dce2c6ff07c0eacd844643aca2574860967e6c2`).
+
+Proof statistics from the checker itself, which are worth reading closely:
+
+```
+c parsing input formula with 2040 variables and 13586 clauses
+c start forward verification
+c 11660 of 13586 clauses in core
+c 1263249 of 1470269 lemmas in core using 98019729 resolution steps
+c 0 RAT lemmas in core; 0 redundant literals in core lemmas
+s VERIFIED
+```
+
+Three things to note. (i) The clause count drat-trim parsed, 13 586, matches my encoder's
+header exactly — the checker validated the formula I claim to have built, not some other
+file. (ii) **11 660 of 13 586 clauses are in the unsatisfiable core**, i.e. 86% of the
+formula is genuinely needed; the refutation is not exploiting some small degenerate
+sub-formula. (iii) **0 RAT lemmas** — every one of the 1 263 249 core lemmas is a plain
+reverse-unit-propagation inference, so the proof is checkable as RUP and does not rely on
+the more delicate RAT rule at all. 98 019 729 resolution steps were checked.
 
 **CHECKER VERDICT: VERIFIED.** No SAT at k=4 — no soundness alarm.
 

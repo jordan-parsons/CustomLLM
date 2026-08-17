@@ -182,7 +182,8 @@ def a3_cancellation():
     """
     wx = (F(3, 10), F(-2, 5))
     wy = (F(2, 5), F(3, 10))
-    assert (K.elem([wx[0], wx[1], 0, 0]) ** 2 if False else True)
+    _w = (K.elem([wx[0], wx[1], 0, 0]), K.elem([wy[0], wy[1], 0, 0]))
+    assert (_w[0] * _w[0] + _w[1] * _w[1]).equals_rational(1), "fixture: not unit"
 
     def make(N):
         px = cancelling(N, F(1, 2))
@@ -234,51 +235,59 @@ def a3_cancellation():
 #      the pair is never even considered.
 # ---------------------------------------------------------------------------
 def a4_bucket_boundary():
-    """Force floor(fl(x_i)) and floor(fl(x_j)) to differ by 2 for a pair at
-    exact distance 1. The 3x3 neighbourhood scan then never enumerates it, and
-    it is missed even though the float squared distance is ~1."""
-    q3 = 10 ** 40
-    p3 = math.isqrt(3 * q3 * q3)
-    sqrt3 = F(p3, q3)
+    """SECOND, INDEPENDENT failure mode: the float grid bucketing.
 
-    def make(N, want):
-        """P.x value ~ `want`; P.x = A + B*sqrt3 with |A|,|B| ~ N."""
-        A0 = F(N)
-        B = -F(A0 * q3, p3)
-        x0 = A0 + B * sqrt3
-        A = A0 + (want - x0)
-        P = Point(K.elem([A, B, 0, 0]), K.zero())
-        Q = Point(K.elem([A + 1, B, 0, 0]), K.zero())
-        assert_truly_unit(P, Q)
-        return [P, Q]
+    detect_edges buckets on (math.floor(fl(x)), math.floor(fl(y))) with cell
+    size 1 and only scans the 3x3 neighbourhood, which is correct ONLY if the
+    float coordinates are accurate enough that a pair at true distance 1 never
+    lands two cells apart.  Here the pair is at EXACT distance 1, its float
+    squared distance is within 8e-9 of 1 (so the prune window would have
+    ACCEPTED it), and it is still lost, because fl(P.x) = 4.99999999627 (cell 4)
+    while fl(Q.x) = 6.0 (cell 6).
 
-    found = None
-    N = 2 ** 20
-    while N < 2 ** 70 and found is None:
-        # slide the target value across an integer boundary
-        for num in range(-40, 41):
-            want = 5 + F(num, 10 ** 7)
-            pts = make(N, want)
-            xs = [p.approx()[0] for p in pts]
-            cells = [math.floor(x) for x in xs]
-            d2 = (xs[0] - xs[1]) ** 2
-            if abs(cells[0] - cells[1]) >= 2 and abs(d2 - 1.0) <= PRUNE_WINDOW:
-                f, s = disagreement(pts)
-                if f != s:
-                    found = (N, want, cells, d2, f, s, pts)
-                    break
-        N *= 2
-    if found is None:
-        report("A4 grid-bucket boundary", True, "could not force a 2-cell split")
-        return
-    N, want, cells, d2, f, s, pts = found
-    report(
-        "A4 grid-bucket boundary",
-        False,
-        f"cells={cells} (differ by {abs(cells[0]-cells[1])}), float d^2-1="
-        f"{d2-1:.2e} INSIDE the window, detect_edges={f} bruteforce={s}; "
-        f"coord values ~{float(want)}",
-    )
+    The unit vector is built from the exact half-angle parametrisation
+    C=(1-u^2)/(1+u^2), S=2u/(1+u^2) with u = A+B*sqrt3 a *cancelling* element,
+    so C and S are exact (C^2+S^2 == 1 is asserted) but have large coefficients
+    that are uncorrelated with P's -- which is what decorrelates the two
+    endpoints' rounding errors.
+    """
+    one = K.one()
+    for uscale in (10 ** 3, 10 ** 4, 10 ** 5):
+        for utgt in (F(1, 10 ** 5), F(3, 10 ** 5), F(1, 10 ** 4)):
+            u = cancelling(uscale, utgt)
+            den = one + u * u
+            C = (one - u * u) * den.inverse()
+            S = (u * 2) * den.inverse()
+            assert (C * C + S * S).equals_rational(1), "fixture: not a unit vector"
+            for pscale in (2 ** 25, 2 ** 26, 2 ** 27, 2 ** 28, 2 ** 29, 2 ** 30):
+                for t in range(400):
+                    dx = F(t * 2_500_003, 10 ** 15)
+                    P = Point(cancelling(pscale, 5 - dx),
+                              cancelling(pscale + 13, F(1, 3)))
+                    Q = Point(P.x + C, P.y + S)
+                    (xp, yp), (xq, yq) = P.approx(), Q.approx()
+                    cp, cq = math.floor(xp), math.floor(xq)
+                    d2 = (xp - xq) ** 2 + (yp - yq) ** 2
+                    if abs(cp - cq) < 2 or abs(d2 - 1.0) > PRUNE_WINDOW:
+                        continue
+                    assert_truly_unit(P, Q)
+                    f, s = disagreement([P, Q])
+                    if f == s:
+                        continue
+                    report(
+                        "A4 grid-bucket boundary",
+                        False,
+                        f"detect_edges={f} bruteforce={s}; fl(P.x)={xp!r} -> cell "
+                        f"{cp}, fl(Q.x)={xq!r} -> cell {cq} (differ by "
+                        f"{abs(cp-cq)}, so the 3x3 scan never enumerates the "
+                        f"pair); float d^2-1 = {d2-1:.4e} which is INSIDE the "
+                        f"window {PRUNE_WINDOW} -- the window would have "
+                        f"accepted it; coefficient scale 2^"
+                        f"{int(math.log2(pscale))}; max |coord VALUE| = "
+                        f"{coord_magnitude([P, Q]):.4g}",
+                    )
+                    return [P, Q]
+    report("A4 grid-bucket boundary", True, "could not force a 2-cell split")
 
 
 # ---------------------------------------------------------------------------
@@ -333,6 +342,40 @@ def a6_rotation_coefficient_growth():
     )
 
 
+def a7_real_data_margin():
+    """How much slack does the REAL project data actually have?
+
+    Runs hn.detect.audit_prune_margin on the published 510-vertex graph and
+    reports the largest coefficient appearing in its exact coordinates. This
+    calibrates the severity of A1-A4: the holes are real, but do the current
+    inputs sit anywhere near them?
+    """
+    import os
+    from hn.detect import audit_prune_margin
+    from hn.field import MultiQuadField
+    from hn.mathematica import load_vtx
+    path = "/home/user/CustomLLM/data/CNP-SAT/vtx/510.vtx"
+    if not os.path.exists(path):
+        report("A7 real-data margin", True, f"{path} absent, skipped")
+        return
+    F8 = MultiQuadField((3, 5, 11))
+    pts, _ = load_vtx(path, field=F8)
+    a = audit_prune_margin(pts)
+    biggest = max(max(abs(c) for c in list(p.x.coeffs) + list(p.y.coeffs))
+                  for p in pts)
+    report(
+        "A7 real-data margin (calibration, not an attack)",
+        True,
+        f"510.vtx: max float |d^2-1| over TRUE edges = "
+        f"{a['max_float_error_on_true_edges']:.3e} (window {PRUNE_WINDOW}, "
+        f"margin {PRUNE_WINDOW / max(a['max_float_error_on_true_edges'], 1e-300):.3g}x); "
+        f"closest non-edge that passed the window = "
+        f"{a['min_float_error_on_non_edges_passing_window']:.3e}; largest "
+        f"coordinate coefficient = {biggest} "
+        f"(A3 needs ~1e10, A4 needs ~3e7 with a decorrelated shift)",
+    )
+
+
 if __name__ == "__main__":
     print(f"PRUNE_WINDOW = {PRUNE_WINDOW}\n")
     a1_axis_aligned()
@@ -341,6 +384,7 @@ if __name__ == "__main__":
     a4_bucket_boundary()
     a5_no_false_positive()
     a6_rotation_coefficient_growth()
+    a7_real_data_margin()
     print()
     if FAIL:
         print("HOLES FOUND:", ", ".join(FAIL))
