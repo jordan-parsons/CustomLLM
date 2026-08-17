@@ -109,3 +109,40 @@ more than we added (basin hopping). That reframes Objective A from a
 minimisation problem into a *construction* problem, contradicting the spec's
 section 7 claim that "beating 509 is a minimization problem, not a construction
 problem" - at least when starting from already-minimised published graphs.
+
+## Provenance corrections forced by Adversary 3 (these change what we may claim)
+
+1. **The 510 graph shipped with NO certificate.** Unlike 517/529/553/610/633/803,
+   Heule's repo provides `vtx/510.vtx` and `edge/510.edge` but no CNF, no DRAT and
+   no Singular distance-one certificate. Taken as-is it was an *unverified
+   third-party assertion*. That gap is now closed by our own machine-checked
+   evidence (2504 exactly-unit edges, k=4 UNSAT drat-trim VERIFIED, k=5 SAT).
+2. **510 is NOT "517 minus 7 vertices".** Only 479 of its 510 exact points occur
+   in `517.vtx`; 31 are new. Any lineage note asserting subgraph descent is wrong.
+3. **510 has no citable publication; attribution is INCONCLUSIVE.** Recovered from
+   git history: commit `a65ee28`, 2019-08-08, "510 vertices 2504 edges" - one
+   month after 517. MathWorld exposes `GraphData["HeuleGraph510"]`, but its
+   Heule-spindle page places 510 in the *Parts* family, and one search summary
+   asserted Parts found 510 while giving 2508 edges, which is simply wrong (exact
+   arithmetic from coordinates gives 2504). **Cite it as a git commit, never as a
+   literature record.**
+4. **The literature check rests on ZERO primary sources.** arxiv.org, mathworld,
+   cs.cmu.edu, researchgate, zenodo, dustingmixon.wordpress.com, michaelnielsen.org
+   and semanticscholar were ALL egress-blocked. Every claim that 509 is the record
+   and that no 6-chromatic unit-distance graph is known is INFERRED from WebSearch
+   paraphrases of secondary sources, corroborated across independent summaries but
+   **not primary-verified**. If either claim were ever to back a headline result it
+   must be re-checked with real arXiv access. Since we are not claiming a record,
+   this limitation is disclosed rather than blocking.
+5. **Unresolved third-party discrepancy.** Secondary sources give 553 as having
+   2720 edges; the repo's own edge file and our exact arithmetic both give 2722.
+   Similarly 510 is sometimes quoted at 2508 edges vs our exact 2504. No soundness
+   impact on our results, cause not determinable without primary sources.
+
+## Verified proofs we produced beyond what upstream published
+Upstream ships DRAT proofs for 517, 529, 553, 610, 633, 803 only. We additionally
+produced kissat refutations with drat-trim VERIFIED verdicts for **510, 826 and
+874**, which had no published proof. All six upstream proofs were also
+independently re-verified through `lrat-check` (a different checking algorithm),
+and four negative controls (corrupted DRAT, truncated DRAT, cross-graph DRAT,
+corrupted LRAT hint) were all correctly rejected with distinct diagnostics.
