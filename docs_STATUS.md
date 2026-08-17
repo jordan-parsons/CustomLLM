@@ -47,3 +47,42 @@ Q(sqrt3,sqrt11); T721 in Q(sqrt2,sqrt3).
 ## Record target
 Current world record: 509 (Parts 2020), confirmed still standing as of Aug 2026.
 **A record requires <= 508.** 509 would only tie.
+
+## Rotation generators of the published point set (recovered empirically)
+All exact in Q(sqrt3,sqrt5,sqrt11); each satisfies cos^2+sin^2 == 1 exactly, and
+`Rotation.__init__` asserts that, so a wrong value raises rather than corrupts.
+
+| name | angle | cos | sin | role |
+|---|---|---|---|---|
+| theta0 | arcsin(1/(2 sqrt3)) ~ 16.7787 deg | sqrt33/6 | sqrt3/6 | **atomic** rotation; maps far more points back into the published sets than alpha |
+| alpha | 2*theta0 | 5/6 | sqrt11/6 | the classical Moser/de Grey spindle angle |
+| beta | 2*arcsin(1/4) | 7/8 | sqrt15/8 | **where sqrt5 enters**; maps 94/510 of the 510-graph but only 1/199 of S199 |
+| hex | k*60 deg | +-1, +-1/2 | 0, +-sqrt3/2 | triangular-lattice symmetry |
+
+Interpretation: beta is the generator the *small record* graphs use and de Grey's
+originals do not, which is why the 510-family needs a degree-8 field while
+de Grey's S199/L403/G2167 live in the degree-4 field Q(sqrt3,sqrt11).
+
+## M1 reconstruction status (why it is genuinely blocked, not skipped)
+- **H CONFIRMED**: hexagon of side 1 plus centre, 7 vertices, 12 edges.
+- **J CONFIRMED** with an exact closed form, checked in integer arithmetic:
+  J = {(a,b) in Z^2 : a^2 + ab + b^2 <= 7} in Eisenstein coordinates.
+  31 points, 72 unit edges; contains exactly 13 copies of H and their union is J.
+- **K, L: counts only.** |K| = 31+31-1 = 61 and |L| = 61+61-1 = 121 are consistent
+  with spindling about a shared vertex, but those counts do NOT pin the rotation
+  angles - any generic rotation reproduces 61/121. Exact angles NOT FOUND.
+- **W, M, N: NOT FOUND.** Without W's definition, M (1345) and N (20425) cannot be
+  reconstructed, and therefore neither can the 1581-vertex reduction.
+Conclusion: M1 as specified is not achievable on this host. Reconstructing the
+missing angles by guesswork is exactly the silent-failure mode the spec warns
+about, so it was not attempted.
+
+## Literature check (Objective A gate)
+- Smallest known 5-chromatic planar unit-distance graph: **509 vertices, 2442
+  edges (Parts 2020)**. Still the record as of Aug 2026.
+- Corroborated independently by MathWorld and by the Aug 2026 Haugland paper
+  (2131-vertex Moser-spindle-free graph), which explicitly states it does not
+  improve the unrestricted record.
+- Nothing at or below 509 found. No 6-chromatic unit-distance graph is known.
+- CAUTION recorded: adjacent problems (two-distance, odd-distance graphs) do
+  reach chromatic number 6 and must not be conflated with the unit-distance case.
