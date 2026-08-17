@@ -1,0 +1,299 @@
+{
+"corpus": [
+{
+"name": "510",
+"n": 510,
+"m": 2504,
+"chromatic": 5,
+"critical": true
+},
+{
+"name": "517",
+"n": 517,
+"m": 2579,
+"chromatic": 5,
+"critical": true
+},
+{
+"name": "529",
+"n": 529,
+"m": 2670,
+"chromatic": 5,
+"critical": true
+},
+{
+"name": "553",
+"n": 553,
+"m": 2722,
+"chromatic": 5,
+"critical": true
+},
+{
+"name": "610",
+"n": 610,
+"m": 3000,
+"chromatic": 5,
+"critical": false
+},
+{
+"name": "633",
+"n": 633,
+"m": 3166,
+"chromatic": 5,
+"critical": false
+},
+{
+"name": "803",
+"n": 803,
+"m": 4144,
+"chromatic": 5,
+"critical": false
+},
+{
+"name": "826",
+"n": 826,
+"m": 4273,
+"chromatic": 5,
+"critical": false
+},
+{
+"name": "874",
+"n": 874,
+"m": 4461,
+"chromatic": 5,
+"critical": false
+}
+],
+"traps": [
+{
+"name": "L403",
+"n": 403,
+"m": 2112
+},
+{
+"name": "S199",
+"n": 199,
+"m": 888
+},
+{
+"name": "G2167",
+"n": 2167,
+"m": 16512
+},
+{
+"name": "T721",
+"n": 721,
+"m": 3948
+}
+],
+"search": {
+"baselines": 16,
+"attempts": 8,
+"improvements": 0,
+"best": 510,
+"attempt_results": [
+510,
+510,
+510,
+517,
+510,
+510,
+510,
+511
+]
+},
+"pools": [
+{
+"name": "P0_heule_union",
+"n": 2306,
+"m": 13569,
+"has510": true
+},
+{
+"name": "P1a_510_D6",
+"n": 907,
+"m": 4902,
+"has510": true
+},
+{
+"name": "P1b_510_C3",
+"n": 550,
+"m": 2775,
+"has510": true
+},
+{
+"name": "P1c_510_rot_L1",
+"n": 2149,
+"m": 12083,
+"has510": true
+},
+{
+"name": "P1d_510_rot_L2",
+"n": 5224,
+"m": 31401,
+"has510": true
+},
+{
+"name": "P1e_union_rot_L1",
+"n": 14189,
+"m": 95925,
+"has510": true
+},
+{
+"name": "P1f_union_D6",
+"n": 10657,
+"m": 74070,
+"has510": true
+},
+{
+"name": "P1g_510_R60_at4centres",
+"n": 1854,
+"m": 10849,
+"has510": true
+},
+{
+"name": "P1g_510_alpha_at4centres",
+"n": 3313,
+"m": 20157,
+"has510": true
+},
+{
+"name": "P1g_510_beta_at4centres",
+"n": 4393,
+"m": 22987,
+"has510": true
+},
+{
+"name": "P1h_510_multi_centre",
+"n": 4572,
+"m": 25219,
+"has510": true
+},
+{
+"name": "P2a_510_plus_H",
+"n": 2378,
+"m": 15605,
+"has510": true
+},
+{
+"name": "P2b_510_plus_J",
+"n": 9168,
+"m": 66635,
+"has510": true
+},
+{
+"name": "P2c_510_plus_TRI",
+"n": 1189,
+"m": 6995,
+"has510": true
+},
+{
+"name": "P2d_S199_plus_J",
+"n": 3115,
+"m": 20838,
+"has510": false
+},
+{
+"name": "P2e_L403_plus_J",
+"n": 5167,
+"m": 40548,
+"has510": false
+},
+{
+"name": "P2f_S199_plus_H",
+"n": 847,
+"m": 5058,
+"has510": false
+},
+{
+"name": "P2g_union_plus_H",
+"n": 11588,
+"m": 90296,
+"has510": true
+},
+{
+"name": "P3_nc510_deg2",
+"n": 4349,
+"m": 25647,
+"has510": true
+},
+{
+"name": "P3_nc510_deg3",
+"n": 1712,
+"m": 11374,
+"has510": true
+},
+{
+"name": "P3_nc510_deg4",
+"n": 1173,
+"m": 7284,
+"has510": true
+},
+{
+"name": "P3_nc510_deg5",
+"n": 908,
+"m": 5331,
+"has510": true
+},
+{
+"name": "P3_ncD6_deg3",
+"n": 2953,
+"m": 20796,
+"has510": true
+},
+{
+"name": "P3_ncD6_deg4",
+"n": 2155,
+"m": 14478,
+"has510": true
+},
+{
+"name": "P4a_unitvec_star",
+"n": 149,
+"m": 294,
+"has510": false
+},
+{
+"name": "P4b_ring2_deg3",
+"n": 724,
+"m": 3792,
+"has510": true
+},
+{
+"name": "P4b_ring2_deg4",
+"n": 673,
+"m": 3555,
+"has510": true
+},
+{
+"name": "P4b_ring2_deg6",
+"n": 562,
+"m": 2883,
+"has510": true
+},
+{
+"name": "P510",
+"n": 510,
+"m": 2504,
+"has510": true
+},
+{
+"name": "P5a_super_510",
+"n": 4279,
+"m": 27948,
+"has510": true
+},
+{
+"name": "P5b_super_510_wide",
+"n": 6368,
+"m": 38789,
+"has510": true
+},
+{
+"name": "PJ31_degrey",
+"n": 31,
+"m": 72,
+"has510": false
+}
+]
+}
