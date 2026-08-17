@@ -146,3 +146,19 @@ produced kissat refutations with drat-trim VERIFIED verdicts for **510, 826 and
 independently re-verified through `lrat-check` (a different checking algorithm),
 and four negative controls (corrupted DRAT, truncated DRAT, cross-graph DRAT,
 corrupted LRAT hint) were all correctly rejected with distinct diagnostics.
+
+## Adversary 1 final confirmation (artifacts re-read from disk)
+- CHECK 1 k=4: `s VERIFIED`, independent-encoder proof `cf4affe6...` (330,646,444 B)
+- D3 (graph minus edge (1,2)): `s VERIFIED`, kissat concurs UNSATISFIABLE
+- Vertex-criticality sweep: 510/510 deletions 4-colourable, 0 still 5-chromatic
+- Report sha256 recorded in reports/MANIFEST.txt
+
+The claim "510.vtx is a planar unit-distance graph with chi = 5 exactly" survived
+every attack. Five discrepancies were raised; none touch soundness. D4 refutes
+NOVELTY (not a record, and not new - it is the known HeuleGraph510) and D3 refutes
+MINIMALITY (edge (1,2) is redundant, so 510v/2503e is also 5-chromatic).
+
+Left visible as uncertainty rather than resolved: the 2504-vs-2508 edge count in
+secondary sources. 2504 is derived from the coordinates alone and is authoritative
+for this point set; the bookkeeping question cannot be closed without primary
+sources, all of which are egress-blocked.

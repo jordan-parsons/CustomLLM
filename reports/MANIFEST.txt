@@ -1,0 +1,8 @@
+# Adversary report manifest (sha256 of the filed reports)
+
+file                     bytes  sha256
+ADVERSARY_1.md           29975  990fdfc61c0674e7f0a5e55f3cabf76eb2168849e9c054ff2a177cd99a49c84b
+ADVERSARY_2.md           32464  39b38c2641b7d6ce6befa23ee1d66190d380ba880de73721b7a4b88357445453
+ADVERSARY_3.md           31848  659e7c043e322a3e8927c04e4b57da044d028d69bb13d4ca8b0dacfdab3a2494
+REFEREE.md                5394  df09d7ec767280e520aa0f634540c4703ed0227cb9c92642c02112608d086561
+CONSTRUCTOR_C1.md        19418  15f074a22cf495760393b00128b6304b0b649375036b641e8aac6c8d6715dd9b
