@@ -1,0 +1,26 @@
+{
+ "workers_finished": 0,
+ "perturbations_triaged": 0,
+ "cores_beating_incumbent": 0,
+ "full_deletion_passes": 0,
+ "search_solver_calls": 0,
+ "improvements_below_510": 0,
+ "full_pass_results": [
+  510,
+  510,
+  510,
+  510,
+  510,
+  510,
+  510,
+  510,
+  510,
+  510,
+  510,
+  510,
+  511,
+  515,
+  517
+ ],
+ "best_verified": 510
+}

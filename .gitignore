@@ -7,3 +7,6 @@ data/CNP-SAT/
 data/dist-graphs/
 *.lrat
 artifacts/**/*.lrat
+catalog/search*.jsonl
+catalog/search*.log
+catalog/orbit*.json*
