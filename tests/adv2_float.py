@@ -376,6 +376,34 @@ def a7_real_data_margin():
     )
 
 
+def a8_udgraph_accepts_a_supplied_edge_list():
+    """graph.py's docstring: "There is deliberately no constructor that accepts a
+    hand-supplied edge list for a geometric graph".  There is: UDGraph(points,
+    edges=...).  verify_edges_exact only checks that every SUPPLIED edge is unit
+    distance -- never that every unit pair was supplied -- so a caller can hand
+    in a strict SUBSET (or an empty list) and construction succeeds silently."""
+    from hn.constructions import rhombus_points
+    from hn.graph import UDGraph
+    from hn.point import spindle_rotation
+    pts = rhombus_points(K)
+    rot = spindle_rotation(K)
+    pts = pts + [rot.apply(p, center=Point(K.zero(), K.zero())) for p in pts]
+    from hn.point import dedup_points
+    pts = dedup_points(pts)
+    honest = UDGraph(pts)
+    lied = UDGraph(pts, edges=[])
+    lied2 = UDGraph(pts, edges=honest.edges[:3])
+    report("A8 UDGraph(points, edges=...) accepts an incomplete edge set", False,
+           f"the same {honest.n} points give m={honest.m} when edges are derived, "
+           f"but UDGraph(points, edges=[]) constructs fine with m={lied.m} and "
+           f"UDGraph(points, edges=first_3) with m={lied2.m}; graph_hash differs "
+           f"({honest.graph_hash()[:8]} vs {lied.graph_hash()[:8]}) while "
+           f"coord_hash is IDENTICAL ({honest.coord_hash()[:8]}), so the catalog "
+           "would key two different graphs to the same coordinate identity. "
+           "Missing edges is the safe direction for a k=4 UNSAT claim but the "
+           "wrong direction for every SAT/4-colourable/vertex-critical claim.")
+
+
 if __name__ == "__main__":
     print(f"PRUNE_WINDOW = {PRUNE_WINDOW}\n")
     a1_axis_aligned()
@@ -385,6 +413,7 @@ if __name__ == "__main__":
     a5_no_false_positive()
     a6_rotation_coefficient_growth()
     a7_real_data_margin()
+    a8_udgraph_accepts_a_supplied_edge_list()
     print()
     if FAIL:
         print("HOLES FOUND:", ", ".join(FAIL))

@@ -50,59 +50,161 @@ def w(path, text):
 # ---------------------------------------------------------------------------
 # D1  real drat-trim against damaged proofs
 # ---------------------------------------------------------------------------
-def d1_damaged_proofs():
-    cnf = w(os.path.join(TMP, "unsat.cnf"), UNSAT_CNF)
-    satcnf = w(os.path.join(TMP, "sat.cnf"), SAT_CNF)
+def d1_forged_proofs_for_a_satisfiable_formula():
+    """The actual soundness property: for a WELL-FORMED SATISFIABLE CNF, no
+    proof whatsoever may make drat-trim say VERIFIED.
+
+    (Damaging the proof of a genuinely UNSAT formula and still getting VERIFIED
+    is NOT unsoundness -- drat-trim certifies the FORMULA, and if the remaining
+    lemmas still yield a conflict the answer is correct. So the test has to be
+    run against a satisfiable formula.)
+    """
+    # a satisfiable formula that is not trivially so
+    sat_lines = ["p cnf 6 8",
+                 "1 2 3 0", "-1 -2 0", "-2 -3 0", "4 5 0",
+                 "-4 6 0", "-5 -6 0", "1 4 0", "-3 5 0"]
+    satcnf = w(os.path.join(TMP, "sat6.cnf"), "\n".join(sat_lines) + "\n")
+    r = run_solver(satcnf, solver="kissat", proof_path=os.path.join(TMP, "s.drat"))
+    assert r.verdict == "SAT", f"fixture: expected SAT, got {r.verdict}"
+
+    unsatcnf = w(os.path.join(TMP, "unsat.cnf"), UNSAT_CNF)
     good = os.path.join(TMP, "good.drat")
-    r = run_solver(cnf, solver="kissat", proof_path=good)
-    if r.verdict != "UNSAT":
-        report("D1 damaged proofs", False,
-               f"setup failed: kissat said {r.verdict} on a trivially UNSAT CNF")
-        return
-    base_verdict, base_tail, _ = check_proof(cnf, good)
-    rows = [("intact kissat proof", base_verdict)]
-
-    def variant(name, content, binary=False):
-        p = os.path.join(TMP, name.replace(" ", "_") + ".drat")
-        mode = "wb" if binary else "w"
-        with open(p, mode) as fh:
-            fh.write(content)
-        v, tail, _ = check_proof(cnf, p)
-        rows.append((name, v))
-        return v
-
+    run_solver(unsatcnf, solver="kissat", proof_path=good)
     with open(good) as fh:
         gtext = fh.read()
 
-    variant("empty proof", "")
-    variant("whitespace-only proof", "\n\n   \n")
-    variant("truncated proof (first half of lines)",
-            "\n".join(gtext.splitlines()[: max(1, len(gtext.splitlines()) // 2)]) + "\n")
-    variant("proof with the final empty clause removed",
-            "\n".join(l for l in gtext.splitlines() if l.strip() != "0") + "\n")
-    variant("garbage text", "this is not a proof at all\nhello world\n")
-    variant("random bytes", os.urandom(512), binary=True)
-    variant("bare empty clause with no derivation", "0\n")
-    variant("comment claiming success", "c s VERIFIED\n")
-    variant("comment claiming success then empty clause", "c s VERIFIED\n0\n")
-    variant("unjustified lemma then empty clause", "1 0\n2 0\n0\n")
-    # a proof of a DIFFERENT formula
-    p2 = os.path.join(TMP, "other.drat")
-    run_solver(satcnf, solver="kissat", proof_path=p2)
-    v, _, _ = check_proof(cnf, p2)
-    rows.append(("proof produced for a different (satisfiable) CNF", v))
-    # missing proof file entirely
-    v, _, _ = check_proof(cnf, os.path.join(TMP, "does_not_exist.drat"))
-    rows.append(("nonexistent proof path", v))
-    # missing CNF
-    v, _, _ = check_proof(os.path.join(TMP, "nope.cnf"), good)
-    rows.append(("nonexistent CNF path", v))
+    forgeries = [
+        ("empty proof", ""),
+        ("whitespace only", "\n\n   \n"),
+        ("bare empty clause, no derivation", "0\n"),
+        ("comment claiming success", "c s VERIFIED\n"),
+        ("comment claiming success then empty clause", "c s VERIFIED\n0\n"),
+        ("garbage text", "not a proof\nhello\n"),
+        ("delete every original clause then claim the empty clause",
+         "".join(f"d {l}\n" for l in sat_lines[1:]) + "0\n"),
+        ("assert a non-RUP unit then the empty clause", "-1 0\n-2 0\n-3 0\n0\n"),
+        ("assert every literal false then the empty clause",
+         "".join(f"-{i} 0\n" for i in range(1, 7)) + "0\n"),
+        ("a valid proof of a DIFFERENT, unsatisfiable formula", gtext),
+        ("p-line injection inside the proof", "p cnf 1 1\n1 0\n-1 0\n0\n"),
+    ]
+    rows = []
+    for name, content in forgeries:
+        p = w(os.path.join(TMP, "f%d.drat" % len(rows)), content)
+        v, _, _ = check_proof(satcnf, p)
+        rows.append((name, v))
+    p = os.path.join(TMP, "rand.drat")
+    with open(p, "wb") as fh:
+        fh.write(os.urandom(512))
+    rows.append(("random bytes", check_proof(satcnf, p)[0]))
+    rows.append(("nonexistent proof path", check_proof(
+        satcnf, os.path.join(TMP, "nope.drat"))[0]))
+    rows.append(("nonexistent CNF path", check_proof(
+        os.path.join(TMP, "nope.cnf"), good)[0]))
 
-    wrongly_verified = [n for (n, v) in rows[1:] if v == "VERIFIED"]
-    report("D1 real drat-trim vs damaged/forged proofs", not wrongly_verified,
-           ("WRONGLY VERIFIED: " + ", ".join(wrongly_verified) + " | ") +
+    wrong = [n for (n, v) in rows if v == "VERIFIED"]
+    report("D1 forged proofs cannot verify a SATISFIABLE formula", not wrong,
+           ("WRONGLY VERIFIED: " + ", ".join(wrong) + " || " if wrong else "") +
            "; ".join(f"{n} -> {v}" for n, v in rows))
-    return rows
+
+
+def d1b_malformed_cnf_gives_a_vacuous_VERIFIED():
+    """CRITICAL: several ordinary CNF malformations make drat-trim mis-parse the
+    formula, print 'c trivial UNSAT' / 's VERIFIED', and NEVER LOOK AT THE PROOF.
+    The formula below is SATISFIABLE and the proof file is EMPTY, and check_proof
+    still returns VERIFIED."""
+    rows = []
+    cases = [
+        ("well-formed satisfiable CNF (control)", "p cnf 2 2\n1 2 0\n-1 2 0\n"),
+        ("one short comment line BETWEEN clauses",
+         "p cnf 2 2\n1 2 0\nc a note\n-1 2 0\n"),
+        ("comment line before the header (control)",
+         "c a note\np cnf 2 2\n1 2 0\n-1 2 0\n"),
+        ("header clause count too HIGH (3 declared, 2 present)",
+         "p cnf 2 3\n1 2 0\n-1 2 0\n"),
+        ("header clause count too LOW (control)",
+         "p cnf 2 1\n1 2 0\n-1 2 0\n"),
+        ("missing trailing 0 on the last clause",
+         "p cnf 2 2\n1 2 0\n-1 2\n"),
+        ("duplicated p line", "p cnf 2 2\np cnf 2 2\n1 2 0\n-1 2 0\n"),
+        ("comment longer than drat-trim's 64KiB line buffer",
+         "p cnf 2 2\n1 2 0\nc " + "x" * 70000 + "\n-1 2 0\n"),
+    ]
+    empty_proof = w(os.path.join(TMP, "empty.drat"), "")
+    for name, text in cases:
+        c = w(os.path.join(TMP, "m%d.cnf" % len(rows)), text)
+        v, tail, _ = check_proof(c, empty_proof)
+        rows.append((name, v))
+    bad = [n for (n, v) in rows if v == "VERIFIED"]
+    report("D1b malformed CNF -> VERIFIED without reading the proof", not bad,
+           ("FALSE VERIFIED on a SATISFIABLE formula with an EMPTY proof: " +
+            " | ".join(bad) + " || " if bad else "") +
+           "; ".join(f"{n} -> {v}" for n, v in rows))
+
+
+def d1c_end_to_end_false_verified_unsat():
+    """The money shot: solve_and_verify() returning is_verified_unsat == True for
+    a SATISFIABLE formula, with a ZERO-BYTE proof file.
+
+    kissat is stubbed only to supply the exit code 20 that the real solver would
+    supply for the formula the project actually intends to solve; everything
+    else (drat-trim, check_proof, solve_and_verify) is the real code path. It
+    shows that nothing downstream asserts that the proof was non-empty or that
+    the checker actually consumed it."""
+    cnf = w(os.path.join(TMP, "e2e.cnf"), "p cnf 2 2\n1 2 0\nc stray comment\n-1 2 0\n")
+    real = oracle.KISSAT
+    try:
+        oracle.KISSAT = fake("fake_kissat_e2e",
+                             'echo "s UNSATISFIABLE"; : > "$4"; exit 20\n')
+        res = solve_and_verify(cnf, os.path.join(TMP, "e2e_art"), "e2e",
+                               solver="kissat", compress_proof=False)
+    finally:
+        oracle.KISSAT = real
+    hole = res.is_verified_unsat
+    report("D1c end-to-end false verified UNSAT", not hole,
+           f"solve_and_verify -> verdict={res.verdict}, "
+           f"checker_verdict={res.checker_verdict}, "
+           f"is_verified_unsat={res.is_verified_unsat}, "
+           f"proof_bytes={res.proof_bytes} -- the formula is SATISFIABLE, the "
+           "proof file is 0 bytes, and drat-trim never examined it")
+
+
+def d1d_audit_project_cnfs():
+    """Regression guard for D1b/D1c: every CNF the project has ever written must
+    be well-formed, because a malformed one silently turns drat-trim into a
+    rubber stamp. Checks header clause count, absence of comment lines, and
+    clause terminators, over artifacts/**/*.cnf."""
+    import glob
+    bad = []
+    files = sorted(glob.glob("/home/user/CustomLLM/artifacts/**/*.cnf",
+                             recursive=True))
+    for p in files:
+        n = c = badterm = 0
+        hdr = None
+        for line in open(p):
+            if line.startswith("p "):
+                if hdr is not None:
+                    bad.append(f"{p}: duplicate p line")
+                hdr = line.split()
+            elif line.startswith("c"):
+                c += 1
+            elif line.strip():
+                n += 1
+                if not line.rstrip().endswith("0"):
+                    badterm += 1
+        if hdr is None:
+            bad.append(f"{p}: no header")
+        elif int(hdr[3]) != n:
+            bad.append(f"{p}: header says {hdr[3]} clauses, file has {n}")
+        if c:
+            bad.append(f"{p}: {c} comment line(s)")
+        if badterm:
+            bad.append(f"{p}: {badterm} clause(s) not terminated by 0")
+    report("D1d every project CNF is well-formed (guard for D1b/D1c)", not bad,
+           "; ".join(bad[:5]) or
+           f"{len(files)} CNFs under artifacts/: header clause counts exact, "
+           "zero comment lines, every clause terminated by 0 -- so no CURRENT "
+           "result was produced through the D1b mis-parse path")
 
 
 # ---------------------------------------------------------------------------
@@ -341,7 +443,10 @@ def d5_leaderboard():
 
 if __name__ == "__main__":
     try:
-        d1_damaged_proofs()
+        d1_forged_proofs_for_a_satisfiable_formula()
+        d1b_malformed_cnf_gives_a_vacuous_VERIFIED()
+        d1c_end_to_end_false_verified_unsat()
+        d1d_audit_project_cnfs()
         d2_checker_interface()
         d3_exit_codes()
         d3b_solve_and_verify_no_proof()

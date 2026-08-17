@@ -230,6 +230,18 @@ fails to be exactly unit distance in our arithmetic, and not one exactly-unit pa
 omitted.** The symmetric difference is empty in both directions for all eight graphs, so
 there is no vertex pair to report with an exact squared distance.
 
+### A third-party-vs-third-party edge-count discrepancy worth recording
+
+Search summaries of arXiv:1907.00929 report the 553-vertex graph as having **2720 edges**.
+Heule's own `edge/553.edge` declares **2722**, and I confirmed **2722** independently by exact
+O(n²) arithmetic from `vtx/553.vtx`, with his `553-4.cnf` implying the same 2722 edges. Either
+the paper's figure differs from the repo's graph, or the search summary garbled it (I could not
+open the PDF — arXiv is egress-blocked). **The repo artifacts are internally consistent and our
+arithmetic agrees with them**; only the secondary-source number is in doubt. Do not cite "553 /
+2720" from this project's data. Likewise the confirmed counts for the whole family, all
+exact-arithmetic verified: 517/2579, 529/2670, 553/2722, 610/3000, 633/3166, 803/4144,
+826/4273, 874/4461, and 510/2504.
+
 ### The single difference, fully characterised (517)
 
 For seven of eight graphs our clause set is **bit-for-bit set-identical** to theirs
