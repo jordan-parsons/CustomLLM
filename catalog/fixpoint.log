@@ -2,3 +2,9 @@
 610 seed=800002 610 -> 610 (-0) calls=612 wall=63.5s BEST=610
 610 seed=800001 610 -> 610 (-0) calls=612 wall=64.6s BEST=610
 610 seed=800000 610 -> 610 (-0) calls=612 wall=72.6s BEST=610
+633 seed=800001 633 -> 633 (-0) calls=635 wall=62.0s BEST=610
+633 seed=800002 633 -> 633 (-0) calls=635 wall=59.8s BEST=610
+803 seed=800000 803 -> 803 (-0) calls=805 wall=506.2s BEST=610
+803 seed=800001 803 -> 803 (-0) calls=805 wall=514.6s BEST=610
+826 seed=800000 826 -> 826 (-0) calls=828 wall=487.3s BEST=610
+803 seed=800002 803 -> 803 (-0) calls=805 wall=526.4s BEST=610

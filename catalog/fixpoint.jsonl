@@ -2,3 +2,9 @@
 {"graph": "610", "seed": 800002, "start_n": 610, "final_n": 610, "reduced_by": 0, "calls": 612, "wall": 63.5}
 {"graph": "610", "seed": 800001, "start_n": 610, "final_n": 610, "reduced_by": 0, "calls": 612, "wall": 64.6}
 {"graph": "610", "seed": 800000, "start_n": 610, "final_n": 610, "reduced_by": 0, "calls": 612, "wall": 72.6}
+{"graph": "633", "seed": 800001, "start_n": 633, "final_n": 633, "reduced_by": 0, "calls": 635, "wall": 62.0}
+{"graph": "633", "seed": 800002, "start_n": 633, "final_n": 633, "reduced_by": 0, "calls": 635, "wall": 59.8}
+{"graph": "803", "seed": 800000, "start_n": 803, "final_n": 803, "reduced_by": 0, "calls": 805, "wall": 506.2}
+{"graph": "803", "seed": 800001, "start_n": 803, "final_n": 803, "reduced_by": 0, "calls": 805, "wall": 514.6}
+{"graph": "826", "seed": 800000, "start_n": 826, "final_n": 826, "reduced_by": 0, "calls": 828, "wall": 487.3}
+{"graph": "803", "seed": 800002, "start_n": 803, "final_n": 803, "reduced_by": 0, "calls": 805, "wall": 526.4}
