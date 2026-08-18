@@ -1,0 +1,4 @@
+pool=P3_nc510_deg2.json n=4349 m=25647
+candidates with deg_510 >= 4: 663
+worst-case (w,v) tests: 338,130 (prune cuts this further)
+batched plan: 510 batch queries (one per v), each clearing up to 663 candidates at once
