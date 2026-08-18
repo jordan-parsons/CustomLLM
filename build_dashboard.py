@@ -134,6 +134,44 @@ def orbit_stats():
     }
 
 
+def subst_stats():
+    """Exhaustive single-point substitution search + the 8 new graphs."""
+    out = {"ran": False}
+    rp = os.path.join(ROOT, "catalog", "substitute_result.json")
+    if os.path.exists(rp):
+        d = json.load(open(rp))
+        out.update({"ran": True, "batches": d.get("batches"),
+                    "drills": d.get("drills"), "cleared": d.get("cleared"),
+                    "ruled_out": (d.get("cleared") or 0) + (d.get("drills") or 0),
+                    "hits": len(d.get("hits") or [])})
+    ip = os.path.join(ROOT, "catalog", "hits_iso.json")
+    if os.path.exists(ip):
+        iso = json.load(open(ip))
+        out["new_graphs"] = [
+            {"w": h["w"], "v": h["v"], "n": h["n"], "m": h["m"],
+             "iso": h["isomorphic_to_orig"]} for h in iso]
+        out["non_isomorphic"] = sum(1 for h in iso if not h["isomorphic_to_orig"])
+    hp = os.path.join(ROOT, "catalog", "hits.jsonl")
+    if os.path.exists(hp):
+        rows = []
+        for line in open(hp):
+            try: rows.append(json.loads(line))
+            except Exception: pass
+        out["reduction_runs"] = len(rows)
+        out["any_reduced"] = any(r.get("reduced_by") for r in rows)
+        out["min_final"] = min([r["final_n"] for r in rows if "final_n" in r] or [None])
+    fp = os.path.join(ROOT, "catalog", "fixpoint.jsonl")
+    if os.path.exists(fp):
+        rows = []
+        for line in open(fp):
+            try: rows.append(json.loads(line))
+            except Exception: pass
+        out["fixpoint_runs"] = len(rows)
+        out["fixpoint_graphs"] = sorted({r["graph"] for r in rows})
+        out["fixpoint_any_reduced"] = any(r.get("reduced_by") for r in rows)
+    return out
+
+
 def main():
     g = read_json(os.path.join(ROOT, "dashboard", "graph510.json"))
     st = read_json(os.path.join(ROOT, "dashboard", "state.json"))
@@ -154,6 +192,7 @@ def main():
         "lrat": _lrat(),
         "s6": search6_stats(),
         "orbit": orbit_stats(),
+        "subst": subst_stats(),
     }
     html = TEMPLATE.replace("__DATA__", json.dumps(payload, separators=(",", ":")))
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
@@ -376,6 +415,29 @@ ul.tight li{margin:4px 0}
 </section>
 
 <section>
+  <div class="shead"><h2>Exhaustive substitution: 8 new graphs</h2><div class="rule"></div></div>
+  <div class="grid cards" id="sub"></div>
+  <div class="note-block" style="margin-top:14px">
+    <strong>The first search here that is exhaustive rather than sampled.</strong>
+    Criticality closes every route ending in "delete from published material" — all
+    nine published graphs are deletion fixpoints, measured over 15 runs. Progress
+    needs points outside them, and the smallest such move is a substitution
+    (510&nbsp;−&nbsp;v)&nbsp;+&nbsp;w. Two proofs make it bounded: adding one vertex
+    w to a 4-colourable graph H is non-4-colourable <em>iff</em> every proper
+    4-colouring of H puts all four colours on N(w)∩H, which needs
+    |N(w)∩H|&nbsp;≥&nbsp;4 — so of 3839 candidates, the 2637 of degree 2 and 539 of
+    degree 3 are discarded <em>with a proof</em>, leaving 663.
+    <br><br>
+    <strong>Eight survived, and all eight are new</strong> — non-isomorphic to the
+    original by exact VF2, not merely by the WL invariant, differing in degree
+    sequence and edge count. <strong>But every one is itself vertex-critical</strong>
+    (24 runs, three deletion orders each, zero vertices removed). So 509 is blocked
+    not by one stubborn graph but by an entire neighbourhood of critical ones.
+  </div>
+  <div id="newgraphs" style="margin-top:14px"></div>
+</section>
+
+<section>
   <div class="shead"><h2>The C3-orbit move</h2><div class="rule"></div></div>
   <div class="grid cards" id="orb"></div>
   <div class="note-block" style="margin-top:14px">
@@ -501,6 +563,26 @@ const ok='<span class="pill p-ok">present</span>', no='<span class="pill p-bad">
   tr.append(el("td","mono",c.name),el("td","num",c.n),el("td","num",c.m),
     el("td","num","≤4"),el("td",null,'<span class="pill p-neutral">4-colourable</span>'));
   $("#corp").tBodies[0].append(tr);});
+
+/* ---- substitution cards ---- */
+const sb=D.subst||{};
+[{k:"Substitutions ruled out",v:(sb.ruled_out||0).toLocaleString(),n:"of 338,130 possible (w,v) pairs"},
+ {k:"Survivors",v:sb.hits==null?"—":sb.hits,n:"still 5-chromatic after the swap"},
+ {k:"Confirmed new graphs",v:sb.non_isomorphic==null?"—":sb.non_isomorphic,n:"non-isomorphic by exact VF2"},
+ {k:"Reducible below 510",v:sb.any_reduced==null?"—":(sb.any_reduced?"yes":"none"),n:(sb.reduction_runs||0)+" reduction runs, all critical"}
+].forEach(c=>{const d=el("div","card");
+  d.append(el("div","k",c.k),el("div","big",String(c.v)),el("div","note",c.n));
+  $("#sub").append(d);});
+if((sb.new_graphs||[]).length){
+  const t=el("table","tbl");
+  t.innerHTML="<thead><tr><th>#</th><th>w</th><th>v</th><th>vertices</th><th>edges</th><th>isomorphic to the 510?</th></tr></thead>";
+  const tb=el("tbody");
+  sb.new_graphs.forEach((h,i)=>{const tr=el("tr");
+    tr.innerHTML=`<td>${i}</td><td>${h.w}</td><td>${h.v}</td><td>${h.n}</td><td>${h.m}</td>`+
+      `<td><span class="pill ${h.iso?'bad':'ok'}">${h.iso?'yes':'no — new graph'}</span></td>`;
+    tb.append(tr);});
+  t.append(tb); $("#newgraphs").append(t);
+}
 
 /* ---- orbit cards ---- */
 const ob=D.orbit||{};
