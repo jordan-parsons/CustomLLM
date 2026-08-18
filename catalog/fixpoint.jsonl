@@ -1,0 +1,4 @@
+{"graph": "633", "seed": 800000, "start_n": 633, "final_n": 633, "reduced_by": 0, "calls": 635, "wall": 55.3}
+{"graph": "610", "seed": 800002, "start_n": 610, "final_n": 610, "reduced_by": 0, "calls": 612, "wall": 63.5}
+{"graph": "610", "seed": 800001, "start_n": 610, "final_n": 610, "reduced_by": 0, "calls": 612, "wall": 64.6}
+{"graph": "610", "seed": 800000, "start_n": 610, "final_n": 610, "reduced_by": 0, "calls": 612, "wall": 72.6}

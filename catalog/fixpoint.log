@@ -1,0 +1,4 @@
+633 seed=800000 633 -> 633 (-0) calls=635 wall=55.3s BEST=633
+610 seed=800002 610 -> 610 (-0) calls=612 wall=63.5s BEST=610
+610 seed=800001 610 -> 610 (-0) calls=612 wall=64.6s BEST=610
+610 seed=800000 610 -> 610 (-0) calls=612 wall=72.6s BEST=610
