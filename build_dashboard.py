@@ -112,6 +112,28 @@ def search6_stats():
             "full_pass_results": [r["result_n"] for r in attempts]}
 
 
+def orbit_stats():
+    """C3-orbit search telemetry."""
+    p = os.path.join(ROOT, "catalog", "orbit2.jsonl")
+    rows = []
+    if os.path.exists(p):
+        for line in open(p):
+            try:
+                rows.append(json.loads(line))
+            except Exception:
+                pass
+    res = [r for r in rows if "result_n" in r]
+    starts = [r for r in rows if r.get("event") == "start"]
+    return {
+        "runs": len(starts),
+        "minimisations": len(res),
+        "results": sorted(r["result_n"] for r in res),
+        "best": min([r["result_n"] for r in res] or [None]) if res else None,
+        "improvements": len([r for r in rows if r.get("IMPROVED")]),
+        "orbits_total": (starts[0].get("orbits") if starts else None),
+    }
+
+
 def main():
     g = read_json(os.path.join(ROOT, "dashboard", "graph510.json"))
     st = read_json(os.path.join(ROOT, "dashboard", "state.json"))
@@ -131,6 +153,7 @@ def main():
         "drat": drat_table(),
         "lrat": _lrat(),
         "s6": search6_stats(),
+        "orbit": orbit_stats(),
     }
     html = TEMPLATE.replace("__DATA__", json.dumps(payload, separators=(",", ":")))
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
@@ -353,7 +376,24 @@ ul.tight li{margin:4px 0}
 </section>
 
 <section>
-  <div class="shead"><h2>Why the search is stuck</h2><div class="rule"></div></div>
+  <div class="shead"><h2>The C3-orbit move</h2><div class="rule"></div></div>
+  <div class="grid cards" id="orb"></div>
+  <div class="note-block" style="margin-top:14px">
+    <strong>This move cannot tie the record — it either misses or beats it.</strong>
+    A C3-symmetric graph built from whole orbits plus the fixed origin has exactly
+    1 + 3(k−1) vertices, so its reachable sizes are …, 517, 514, 511, <strong>508</strong>,
+    505, 502. The values 509 and 510 are <em>arithmetically unreachable</em>. That makes
+    this the one move vertex-criticality does not already forbid: criticality says
+    G−v is 4-colourable for every single v, which also kills orbit deletion from the
+    510 itself, since G−{p,Rp,R²p} ⊆ G−p. It says nothing about a <em>larger
+    symmetric</em> graph, where added points can compensate for a removed one.
+    First result: 550 → 517 vertices, deleting 11 whole orbits at once. Three more
+    orbit deletions would be a record.
+  </div>
+</section>
+
+<section>
+  <div class="shead"><h2>Why the vertex search is stuck</h2><div class="rule"></div></div>
   <div class="grid cards" id="search"></div>
   <div class="note-block" style="margin-bottom:14px">
     <strong>The cheap filter turned out not to work, and that is reported rather than
@@ -461,6 +501,16 @@ const ok='<span class="pill p-ok">present</span>', no='<span class="pill p-bad">
   tr.append(el("td","mono",c.name),el("td","num",c.n),el("td","num",c.m),
     el("td","num","≤4"),el("td",null,'<span class="pill p-neutral">4-colourable</span>'));
   $("#corp").tBodies[0].append(tr);});
+
+/* ---- orbit cards ---- */
+const ob=D.orbit||{};
+[{k:"Orbit minimisations",v:ob.minimisations||0,n:"whole C3 orbits deleted per step"},
+ {k:"Best symmetric graph",v:ob.best==null?"—":ob.best,n:"vertices, 5-chromatic and C3-symmetric"},
+ {k:"Orbits in the closure",v:ob.orbits_total||"—",n:"183 triples + the fixed origin"},
+ {k:"Deletions to a record",v:ob.best==null?"—":Math.max(0,Math.ceil((ob.best-508)/3)),n:"further whole-orbit deletions needed"}
+].forEach(c=>{const d=el("div","card");
+  d.append(el("div","k",c.k),el("div","big",String(c.v)),el("div","note",c.n));
+  $("#orb").append(d);});
 
 /* ---- search cards ---- */
 const s6=D.s6||{}; const sc=S.search||{};

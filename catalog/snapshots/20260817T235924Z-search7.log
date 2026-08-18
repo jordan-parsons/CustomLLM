@@ -1,0 +1,14 @@
+rd0 P3_nc510_deg3.json seed=400000 n=510 triaged=11 core_beat=0 full=11 imp=0 calls=11582 wall=1584.9 BEST=510
+rd0 P3_ncD6_deg3.json seed=400001 n=510 triaged=11 core_beat=0 full=11 imp=0 calls=11575 wall=1601.7 BEST=510
+rd0 P5a_super_510.json seed=400002 n=510 triaged=11 core_beat=0 full=11 imp=0 calls=11523 wall=1549.9 BEST=510
+rd0 P1d_510_rot_L2.json seed=400003 n=510 triaged=11 core_beat=0 full=11 imp=0 calls=11513 wall=1547.2 BEST=510
+rd1 P3_nc510_deg3.json seed=400004 n=510 triaged=11 core_beat=0 full=11 imp=0 calls=11554 wall=1579.6 BEST=510
+rd1 P3_ncD6_deg3.json seed=400005 n=510 triaged=11 core_beat=0 full=11 imp=0 calls=11569 wall=1593.3 BEST=510
+rd1 P5a_super_510.json seed=400006 n=510 triaged=11 core_beat=0 full=11 imp=0 calls=11546 wall=1575.5 BEST=510
+rd1 P1d_510_rot_L2.json seed=400007 n=510 triaged=11 core_beat=0 full=11 imp=0 calls=11561 wall=1583.6 BEST=510
+rd2 P3_ncD6_deg3.json seed=400009 n=510 triaged=11 core_beat=0 full=11 imp=0 calls=11511 wall=1540.5 BEST=510
+rd2 P3_nc510_deg3.json seed=400008 n=510 triaged=11 core_beat=0 full=11 imp=0 calls=11591 wall=1628.7 BEST=510
+rd2 P5a_super_510.json seed=400010 n=510 triaged=11 core_beat=0 full=11 imp=0 calls=11551 wall=1609.9 BEST=510
+rd2 P1d_510_rot_L2.json seed=400011 n=510 triaged=11 core_beat=0 full=11 imp=0 calls=11601 wall=1538.7 BEST=510
+rd3 P3_nc510_deg3.json seed=400012 n=510 triaged=11 core_beat=0 full=11 imp=0 calls=11516 wall=1629.6 BEST=510
+rd3 P3_ncD6_deg3.json seed=400013 n=510 triaged=11 core_beat=0 full=11 imp=0 calls=11577 wall=1609.3 BEST=510
