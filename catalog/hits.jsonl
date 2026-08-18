@@ -10,3 +10,15 @@
 {"hit": 3, "w": 971, "v": 373, "seed": 900000, "start_n": 510, "final_n": 510, "reduced_by": 0, "calls": 511, "wall": 92.5}
 {"hit": 3, "w": 971, "v": 373, "seed": 900002, "start_n": 510, "final_n": 510, "reduced_by": 0, "calls": 511, "wall": 91.6}
 {"hit": 3, "w": 971, "v": 373, "seed": 900001, "start_n": 510, "final_n": 510, "reduced_by": 0, "calls": 511, "wall": 97.2}
+{"hit": 4, "w": 4047, "v": 487, "seed": 900000, "start_n": 510, "final_n": 510, "reduced_by": 0, "calls": 511, "wall": 88.8}
+{"hit": 4, "w": 4047, "v": 487, "seed": 900001, "start_n": 510, "final_n": 510, "reduced_by": 0, "calls": 511, "wall": 88.2}
+{"hit": 4, "w": 4047, "v": 487, "seed": 900002, "start_n": 510, "final_n": 510, "reduced_by": 0, "calls": 511, "wall": 97.6}
+{"hit": 5, "w": 645, "v": 354, "seed": 900000, "start_n": 510, "final_n": 510, "reduced_by": 0, "calls": 511, "wall": 100.0}
+{"hit": 5, "w": 645, "v": 354, "seed": 900001, "start_n": 510, "final_n": 510, "reduced_by": 0, "calls": 511, "wall": 89.6}
+{"hit": 6, "w": 553, "v": 370, "seed": 900000, "start_n": 510, "final_n": 510, "reduced_by": 0, "calls": 511, "wall": 89.8}
+{"hit": 6, "w": 553, "v": 370, "seed": 900001, "start_n": 510, "final_n": 510, "reduced_by": 0, "calls": 511, "wall": 83.0}
+{"hit": 5, "w": 645, "v": 354, "seed": 900002, "start_n": 510, "final_n": 510, "reduced_by": 0, "calls": 511, "wall": 100.6}
+{"hit": 6, "w": 553, "v": 370, "seed": 900002, "start_n": 510, "final_n": 510, "reduced_by": 0, "calls": 511, "wall": 82.8}
+{"hit": 7, "w": 677, "v": 374, "seed": 900002, "start_n": 510, "final_n": 510, "reduced_by": 0, "calls": 511, "wall": 87.4}
+{"hit": 7, "w": 677, "v": 374, "seed": 900000, "start_n": 510, "final_n": 510, "reduced_by": 0, "calls": 511, "wall": 94.2}
+{"hit": 7, "w": 677, "v": 374, "seed": 900001, "start_n": 510, "final_n": 510, "reduced_by": 0, "calls": 511, "wall": 97.1}
