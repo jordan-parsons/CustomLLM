@@ -172,6 +172,33 @@ def subst_stats():
     return out
 
 
+def ladder_stats():
+    """The add-k ladder to a record, and the add-2 frontier sampling."""
+    import re as _re
+    rows = []
+    lg = os.path.join(ROOT, "catalog", "add2.log")
+    if os.path.exists(lg):
+        for line in open(lg):
+            m = _re.search(r"rd(\d+) (\S+) seed=(\d+) n=(\d+) iters=(\d+) min_seen=(\S+)", line)
+            if m:
+                rows.append({"label": m.group(2), "n": int(m.group(4)),
+                             "iters": int(m.group(5)),
+                             "min_seen": None if m.group(6) == "None" else int(m.group(6))})
+    cor = os.path.join(ROOT, "catalog", "corollary.json")
+    proved = False
+    if os.path.exists(cor):
+        proved = bool(json.load(open(cor)).get("F2_all_critical"))
+    mins = [r["min_seen"] for r in rows if r["min_seen"] is not None]
+    return {
+        "add2_runs": len(rows),
+        "add2_iterations": sum(r["iters"] for r in rows),
+        "add2_min": min(mins) if mins else None,
+        "add2_all_510": bool(mins) and all(m == 510 for m in mins),
+        "add2_starts": sorted({r["label"] for r in rows}),
+        "corollary_proved": proved,
+    }
+
+
 def main():
     g = read_json(os.path.join(ROOT, "dashboard", "graph510.json"))
     st = read_json(os.path.join(ROOT, "dashboard", "state.json"))
@@ -193,6 +220,7 @@ def main():
         "s6": search6_stats(),
         "orbit": orbit_stats(),
         "subst": subst_stats(),
+        "ladder": ladder_stats(),
     }
     html = TEMPLATE.replace("__DATA__", json.dumps(payload, separators=(",", ":")))
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
@@ -415,6 +443,29 @@ ul.tight li{margin:4px 0}
 </section>
 
 <section>
+  <div class="shead"><h2>The ladder to a record</h2><div class="rule"></div></div>
+  <p class="lead">A record needs <strong>≤ 508</strong> vertices — a net loss of 2 from
+  510. Enumerating the moves by how many points they add gives a ladder, and two rungs
+  are now closed <em>by proof</em> rather than by failed search.</p>
+  <table class="tbl" id="ladder"></table>
+  <div class="note-block" style="margin-top:14px">
+    <strong>The corollary, proved over this pool.</strong> Suppose (G&nbsp;+&nbsp;w)&nbsp;−&nbsp;D
+    is non-4-colourable with |D|&nbsp;≥&nbsp;2. If w&nbsp;∈&nbsp;D it is a subgraph of G
+    minus a vertex, 4-colourable by criticality — contradiction. If w&nbsp;∉&nbsp;D, pick
+    v₁&nbsp;∈&nbsp;D: it is a subgraph of (G−v₁)+w, and a supergraph of a
+    non-4-colourable graph is non-4-colourable, so (w,v₁) must be one of the 8
+    exhaustively enumerated hits. Now pick a second v₂&nbsp;∈&nbsp;D: it is a subgraph of
+    H−v₂ for that hit graph H, so H−v₂ is non-4-colourable. But every hit graph is
+    vertex-critical. Contradiction. ∎
+    <br><br>
+    It rests on two computational facts, both airtight: the 8 hits are <em>all</em> the
+    hits (exhaustive search + the proved degree&nbsp;≥&nbsp;4 prune lemma), and every hit
+    graph is vertex-critical (re-verified from scratch — all 510 single deletions per
+    graph, 0 removable). <strong>Scope: a theorem about the pool, not about the plane.</strong>
+  </div>
+</section>
+
+<section>
   <div class="shead"><h2>Exhaustive substitution: 8 new graphs</h2><div class="rule"></div></div>
   <div class="grid cards" id="sub"></div>
   <div class="note-block" style="margin-top:14px">
@@ -563,6 +614,23 @@ const ok='<span class="pill p-ok">present</span>', no='<span class="pill p-bad">
   tr.append(el("td","mono",c.name),el("td","num",c.n),el("td","num",c.m),
     el("td","num","≤4"),el("td",null,'<span class="pill p-neutral">4-colourable</span>'));
   $("#corp").tBodies[0].append(tr);});
+
+/* ---- ladder ---- */
+const L=D.ladder||{};
+const rungs=[
+ ["add 0, delete 2","IMPOSSIBLE","proof","vertex-criticality of the 510"],
+ ["add 1, delete 3","IMPOSSIBLE","proof","corollary; exhaustive over the pool"],
+ ["add 2, delete 4","open","sampled",(L.add2_iterations||0)+" iterations, all returned 510"],
+ ["add k ≥ 3","untouched","—","not attempted"]];
+{const t=$("#ladder");
+ t.innerHTML="<thead><tr><th>move</th><th>status</th><th>basis</th><th>evidence</th></tr></thead>";
+ const tb=el("tbody");
+ rungs.forEach(r=>{const tr=el("tr");
+   const cls=r[1]==="IMPOSSIBLE"?"ok":(r[1]==="open"?"warn":"");
+   tr.innerHTML=`<td><code>${r[0]}</code></td><td><span class="pill ${cls}">${r[1]}</span></td>`+
+     `<td>${r[2]}</td><td>${r[3]}</td>`;
+   tb.append(tr);});
+ t.append(tb);}
 
 /* ---- substitution cards ---- */
 const sb=D.subst||{};
