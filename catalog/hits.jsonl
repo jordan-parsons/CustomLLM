@@ -1,0 +1,4 @@
+{"hit": 0, "w": 997, "v": 364, "seed": 900000, "start_n": 510, "final_n": 510, "reduced_by": 0, "calls": 511, "wall": 69.4}
+{"hit": 0, "w": 997, "v": 364, "seed": 900002, "start_n": 510, "final_n": 510, "reduced_by": 0, "calls": 511, "wall": 67.5}
+{"hit": 1, "w": 4145, "v": 504, "seed": 900000, "start_n": 510, "final_n": 510, "reduced_by": 0, "calls": 511, "wall": 72.5}
+{"hit": 0, "w": 997, "v": 364, "seed": 900001, "start_n": 510, "final_n": 510, "reduced_by": 0, "calls": 511, "wall": 76.8}
