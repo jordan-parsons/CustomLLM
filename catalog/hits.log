@@ -1,1 +1,15 @@
 building pool once in parent...
+pool n=4349 m=25647; handing integer adjacency to workers
+testing 8 hits x 3 seeds = 24 runs
+hit0 w=997 v=364 seed=900000 -> 510 (-0)  BEST=510
+hit0 w=997 v=364 seed=900002 -> 510 (-0)  BEST=510
+hit0 w=997 v=364 seed=900001 -> 510 (-0)  BEST=510
+hit1 w=4145 v=504 seed=900000 -> 510 (-0)  BEST=510
+hit2 w=525 v=357 seed=900000 -> 510 (-0)  BEST=510
+hit1 w=4145 v=504 seed=900001 -> 510 (-0)  BEST=510
+hit1 w=4145 v=504 seed=900002 -> 510 (-0)  BEST=510
+hit2 w=525 v=357 seed=900001 -> 510 (-0)  BEST=510
+hit2 w=525 v=357 seed=900002 -> 510 (-0)  BEST=510
+hit3 w=971 v=373 seed=900000 -> 510 (-0)  BEST=510
+hit3 w=971 v=373 seed=900002 -> 510 (-0)  BEST=510
+hit3 w=971 v=373 seed=900001 -> 510 (-0)  BEST=510
