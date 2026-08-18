@@ -31,8 +31,23 @@ So candidates w with fewer than 4 neighbours in the 510 can be discarded with a
 proof, not a heuristic. That is what turns an intractable sweep into a bounded
 one, and it is why a negative result here is exhaustive rather than statistical.
 
+The batching trick, which makes it fast as well as exhaustive
+------------------------------------------------------------
+Testing 663 candidates against each of 510 vertices is 338,130 queries. But
+monotonicity collapses it. For a FIXED v, add ALL surviving candidates W at once:
+
+    if (510 - v) + W  is 4-COLOURABLE
+    then (510 - v) + w is 4-colourable for every w in W,
+
+because (510 - v) + w is a subgraph of (510 - v) + W and 4-colourability is
+inherited by subgraphs. So ONE satisfiable answer clears all 663 candidates for
+that v. Only when the batch is UNSAT must we drill into individual w.
+
+That turns 338,130 queries into 510 plus drill-downs, with an identical
+exhaustive guarantee - the logic is a monotonicity argument, not a heuristic.
+
 Encoding: one MUSReducer over 510 + all surviving candidates, with presence
-literals; testing (510 - v + w) is then a single assumption query.
+literals; every query is a single assumption call.
 
 Search-time answers steer only; any hit is re-proved by verify_candidate.py.
 """
@@ -71,31 +86,40 @@ def setup(pool_path, min_deg=4):
     return pool, B, cands
 
 def worker(a):
-    pool_path, chunk, min_deg = a
+    pool_path, vchunk, min_deg = a
     pool, B, cands = setup(pool_path, min_deg)
     bs = set(B)
-    keep = sorted(bs | {w for w,_ in cands})
+    W = [w for w, _ in cands]
+    degw = dict(cands)
+    keep = sorted(bs | set(W))
     sub = restrict(pool.adj, keep)
-    pos = {v:i for i,v in enumerate(sub.index)}
+    pos = {v: i for i, v in enumerate(sub.index)}
     R = MUSReducer(sub, 4, break_symmetry=False)
-    hits = []; tested = 0; t0 = time.time()
+    hits = []; batches = 0; drills = 0; cleared = 0; t0 = time.time()
     try:
-        for w, dw in chunk:
-            nbrs = set(pool.adj[w]) & bs
-            for v in B:
-                # sound prune: need >=4 neighbours surviving in 510 - v
-                eff = dw - (1 if v in nbrs else 0)
-                if eff < 4: continue
-                tested += 1
-                S = [pos[u] for u in bs if u != v] + [pos[w]]
-                if R.is_unsat(S):
-                    hits.append({"w": w, "v": v, "deg_w": dw})
-                    log({"event":"HIT","w":w,"v":v,"deg_w":dw,
-                         "pool":os.path.basename(pool_path)})
+        for v in vchunk:
+            base = [pos[u] for u in bs if u != v]
+            # BATCH: all candidates at once. SAT here clears every single w.
+            batches += 1
+            if not R.is_unsat(base + [pos[w] for w in W]):
+                cleared += len(W)
+                continue
+            # batch UNSAT -> some individual w may work; drill in
+            log({"event": "BATCH_UNSAT", "v": v,
+                 "pool": os.path.basename(pool_path)})
+            for w in W:
+                nbrs = set(pool.adj[w]) & bs
+                if degw[w] - (1 if v in nbrs else 0) < 4:
+                    continue
+                drills += 1
+                if R.is_unsat(base + [pos[w]]):
+                    hits.append({"w": w, "v": v, "deg_w": degw[w]})
+                    log({"event": "HIT", "w": w, "v": v, "deg_w": degw[w],
+                         "pool": os.path.basename(pool_path)})
     finally:
         R.close()
-    return {"tested": tested, "hits": hits, "cands": len(chunk),
-            "wall": round(time.time()-t0,1), "calls": R.calls}
+    return {"batches": batches, "drills": drills, "cleared": cleared,
+            "hits": hits, "wall": round(time.time() - t0, 1), "calls": R.calls}
 
 if __name__ == "__main__":
     pool_path = os.environ.get("HN_SUBPOOL", "data/pools/P3_nc510_deg2.json")
@@ -105,15 +129,22 @@ if __name__ == "__main__":
     print(f"pool={os.path.basename(pool_path)} n={pool.n} m={pool.m}", flush=True)
     print(f"candidates with deg_510 >= {min_deg}: {len(cands)}", flush=True)
     print(f"worst-case (w,v) tests: {len(cands)*510:,} (prune cuts this further)", flush=True)
-    chunks = [cands[i::NW] for i in range(NW)]
+    print(f"batched plan: {len(B)} batch queries (one per v), "
+          f"each clearing up to {len(cands)} candidates at once", flush=True)
+    chunks = [B[i::NW] for i in range(NW)]
     args = [(pool_path, c, min_deg) for c in chunks if c]
-    tot_tested = 0; all_hits = []
+    tb = td = tc = 0; all_hits = []
     with mp.Pool(len(args)) as P:
         for r in P.imap_unordered(worker, args):
-            tot_tested += r["tested"]; all_hits += r["hits"]
-            print(f"  chunk done: cands={r['cands']} tested={r['tested']} "
-                  f"hits={len(r['hits'])} wall={r['wall']}s", flush=True)
-    print(f"EXHAUSTIVE RESULT: tested {tot_tested:,} (w,v) substitutions, "
-          f"{len(all_hits)} still 5-chromatic", flush=True)
-    json.dump({"pool": pool_path, "min_deg": min_deg, "tested": tot_tested,
-               "hits": all_hits}, open("catalog/substitute_result.json","w"), indent=1)
+            tb += r["batches"]; td += r["drills"]; tc += r["cleared"]
+            all_hits += r["hits"]
+            print(f"  chunk: batches={r['batches']} drills={r['drills']} "
+                  f"cleared={r['cleared']:,} hits={len(r['hits'])} "
+                  f"wall={r['wall']}s", flush=True)
+    print(f"EXHAUSTIVE RESULT over pool {os.path.basename(pool_path)}:", flush=True)
+    print(f"  {tb} batch queries + {td:,} drill-downs", flush=True)
+    print(f"  (w,v) substitutions ruled out: {tc + td:,}", flush=True)
+    print(f"  still 5-chromatic: {len(all_hits)}", flush=True)
+    json.dump({"pool": pool_path, "min_deg": min_deg, "batches": tb,
+               "drills": td, "cleared": tc, "hits": all_hits},
+              open("catalog/substitute_result.json", "w"), indent=1)
