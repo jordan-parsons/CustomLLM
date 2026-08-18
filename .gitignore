@@ -10,3 +10,4 @@ artifacts/**/*.lrat
 catalog/search*.jsonl
 catalog/search*.log
 catalog/orbit*.json*
+catalog/m3.log

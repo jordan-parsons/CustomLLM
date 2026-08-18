@@ -46,6 +46,11 @@ from hn.point import Point
 
 OUT = "/home/user/CustomLLM/catalog/search6.jsonl"
 FORCE_FULL = int(os.environ.get("HN_FORCE_FULL", "1"))
+# Perturbation size. Passes 1-4 sampled only 3-45 added points and every one
+# collapsed back to the incumbent; the basin may simply be wider than that, so
+# this is now tunable and the large-perturbation regime is explored separately.
+ADD_MIN = int(os.environ.get("HN_ADD_MIN", "3"))
+ADD_MAX = int(os.environ.get("HN_ADD_MAX", "45"))
 
 
 def log(rec):
@@ -137,7 +142,7 @@ def worker(a):
             break
         cands = list(cnt)
         w = [cnt[v] ** 3 for v in cands]
-        nadd = rng.randint(3, min(45, len(cands)))
+        nadd = rng.randint(ADD_MIN, min(ADD_MAX, len(cands)))
         added = set()
         for _ in range(nadd * 5):
             if len(added) >= nadd:
