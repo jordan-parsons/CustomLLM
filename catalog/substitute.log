@@ -2,3 +2,11 @@ pool=P3_nc510_deg2.json n=4349 m=25647
 candidates with deg_510 >= 4: 663
 worst-case (w,v) tests: 338,130 (prune cuts this further)
 batched plan: 510 batch queries (one per v), each clearing up to 663 candidates at once
+  chunk: batches=128 drills=73366 cleared=11,271 hits=2 wall=8178.0s
+  chunk: batches=128 drills=75328 cleared=9,282 hits=2 wall=9242.7s
+  chunk: batches=127 drills=74668 cleared=9,282 hits=1 wall=9456.3s
+  chunk: batches=127 drills=74000 cleared=9,945 hits=3 wall=10119.0s
+EXHAUSTIVE RESULT over pool P3_nc510_deg2.json:
+  510 batch queries + 297,362 drill-downs
+  (w,v) substitutions ruled out: 337,142
+  still 5-chromatic: 8

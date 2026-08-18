@@ -15,3 +15,4 @@
 874 seed=800001 874 -> 874 (-0) calls=876 wall=588.6s BEST=610
 874 seed=800002 874 -> 874 (-0) calls=876 wall=517.6s BEST=610
 DONE best= 610
+=== SUBSTITUTION DONE ===
