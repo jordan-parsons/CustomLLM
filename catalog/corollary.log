@@ -1,0 +1,17 @@
+pool n=4349 m=25647; 510 present; 8 exhaustive hits
+
+hit0 w=  997 v= 364: all 510 single deletions tested, removable=0 -> VERTEX-CRITICAL
+hit1 w= 4145 v= 504: all 510 single deletions tested, removable=0 -> VERTEX-CRITICAL
+hit2 w=  525 v= 357: all 510 single deletions tested, removable=0 -> VERTEX-CRITICAL
+hit3 w=  971 v= 373: all 510 single deletions tested, removable=0 -> VERTEX-CRITICAL
+hit4 w= 4047 v= 487: all 510 single deletions tested, removable=0 -> VERTEX-CRITICAL
+hit5 w=  645 v= 354: all 510 single deletions tested, removable=0 -> VERTEX-CRITICAL
+hit6 w=  553 v= 370: all 510 single deletions tested, removable=0 -> VERTEX-CRITICAL
+hit7 w=  677 v= 374: all 510 single deletions tested, removable=0 -> VERTEX-CRITICAL
+
+F2 (all 8 hit graphs vertex-critical): CONFIRMED
+
+COROLLARY: PROVED over this pool
+  No single added point from the deg>=2 completion pool, combined with any
+  2 or more deletions, yields a 5-chromatic graph. So 509 and 508 are both
+  unreachable by an add-1 move over this pool.
