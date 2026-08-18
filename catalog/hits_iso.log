@@ -1,0 +1,11 @@
+original 510: n=510 m=2504 graph_hash=009be06703f94bcf
+hit0 w=  997 v= 364: n=510 m=2505 deg_seq_same=False wl_same=False ISOMORPHIC=False
+hit1 w= 4145 v= 504: n=510 m=2504 deg_seq_same=False wl_same=False ISOMORPHIC=False
+hit2 w=  525 v= 357: n=510 m=2506 deg_seq_same=False wl_same=False ISOMORPHIC=False
+hit3 w=  971 v= 373: n=510 m=2505 deg_seq_same=False wl_same=False ISOMORPHIC=False
+hit4 w= 4047 v= 487: n=510 m=2504 deg_seq_same=False wl_same=False ISOMORPHIC=False
+hit5 w=  645 v= 354: n=510 m=2505 deg_seq_same=False wl_same=False ISOMORPHIC=False
+hit6 w=  553 v= 370: n=510 m=2505 deg_seq_same=False wl_same=False ISOMORPHIC=False
+hit7 w=  677 v= 374: n=510 m=2506 deg_seq_same=False wl_same=False ISOMORPHIC=False
+
+NEW (non-isomorphic) graphs: 8 of 8

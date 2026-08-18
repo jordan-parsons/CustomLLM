@@ -1,0 +1,82 @@
+[
+ {
+  "hit": 0,
+  "w": 997,
+  "v": 364,
+  "n": 510,
+  "m": 2505,
+  "isomorphic_to_orig": false,
+  "coord_hash": "078e48c4e149e8edea6e8986ae03803b220011567b01b294309a90d05134302e",
+  "graph_hash": "ac497771c80ee66f54562ef7621871aa35cbed5915522163263cdd160a5fd0f7"
+ },
+ {
+  "hit": 1,
+  "w": 4145,
+  "v": 504,
+  "n": 510,
+  "m": 2504,
+  "isomorphic_to_orig": false,
+  "coord_hash": "cf47064f0215328e7eb3c9e27d0250d394c0a853d49f7c56f124395b190efb31",
+  "graph_hash": "315016626bbaf372c8cb283ccb5760154a16fa3c4f96a088bedee322448952c0"
+ },
+ {
+  "hit": 2,
+  "w": 525,
+  "v": 357,
+  "n": 510,
+  "m": 2506,
+  "isomorphic_to_orig": false,
+  "coord_hash": "6a424d1a400863bac4d3b471f8437fde482d0b523673286910439e758059e650",
+  "graph_hash": "3abd7c182fa7b5590df05c22ae9888c051bbec6a7ce3a91548b07aee2e9c3786"
+ },
+ {
+  "hit": 3,
+  "w": 971,
+  "v": 373,
+  "n": 510,
+  "m": 2505,
+  "isomorphic_to_orig": false,
+  "coord_hash": "a7d688ed0c2e9c78ed39eb442018deba518ad63f1d12fdf993570e3c5aeafdfc",
+  "graph_hash": "a895645c0e6af602b7f091611020b42bddcd1f7e13b384d17e1f8e7fb037452e"
+ },
+ {
+  "hit": 4,
+  "w": 4047,
+  "v": 487,
+  "n": 510,
+  "m": 2504,
+  "isomorphic_to_orig": false,
+  "coord_hash": "ac05b1e789303a009bb1216f77738fd6f2154c7dbd94dbbb3d72b6636246e259",
+  "graph_hash": "989020c60ce4693dadcfaf3ef0fee1f98955328503d061fc80d7444fa1e9d164"
+ },
+ {
+  "hit": 5,
+  "w": 645,
+  "v": 354,
+  "n": 510,
+  "m": 2505,
+  "isomorphic_to_orig": false,
+  "coord_hash": "88cfd4bac76c957a6b48af2808f2e441d5fe4d7a87edd92481fa7fdb845435f5",
+  "graph_hash": "b4806e9855f8ec67f0fa00d3a6f2548ede2c8f4214cc6ef6e0f6e6775472efa5"
+ },
+ {
+  "hit": 6,
+  "w": 553,
+  "v": 370,
+  "n": 510,
+  "m": 2505,
+  "isomorphic_to_orig": false,
+  "coord_hash": "4a293cca890bc50956c14dcaec78401bae89aa8dbdeca71235b357607b6c2e29",
+  "graph_hash": "963539436682cc4a2040c13c9c6c48ae1dbd8524564bc4b4b685d4c6f3b65d1e"
+ },
+ {
+  "hit": 7,
+  "w": 677,
+  "v": 374,
+  "n": 510,
+  "m": 2506,
+  "isomorphic_to_orig": false,
+  "coord_hash": "4b441236b734d1cbb52a2ee6a885bc61bffaa9dabdd3a3d13abd7b506f5cce9f",
+  "graph_hash": "8953bb9b600176c3680737df1912a49ae0ca9b344d5407e792fb5f31b176bbf3"
+ }
+]
