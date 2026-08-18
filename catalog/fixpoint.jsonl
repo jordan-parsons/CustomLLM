@@ -8,3 +8,8 @@
 {"graph": "803", "seed": 800001, "start_n": 803, "final_n": 803, "reduced_by": 0, "calls": 805, "wall": 514.6}
 {"graph": "826", "seed": 800000, "start_n": 826, "final_n": 826, "reduced_by": 0, "calls": 828, "wall": 487.3}
 {"graph": "803", "seed": 800002, "start_n": 803, "final_n": 803, "reduced_by": 0, "calls": 805, "wall": 526.4}
+{"graph": "826", "seed": 800002, "start_n": 826, "final_n": 826, "reduced_by": 0, "calls": 828, "wall": 517.6}
+{"graph": "826", "seed": 800001, "start_n": 826, "final_n": 826, "reduced_by": 0, "calls": 828, "wall": 551.5}
+{"graph": "874", "seed": 800000, "start_n": 874, "final_n": 874, "reduced_by": 0, "calls": 876, "wall": 584.4}
+{"graph": "874", "seed": 800001, "start_n": 874, "final_n": 874, "reduced_by": 0, "calls": 876, "wall": 588.6}
+{"graph": "874", "seed": 800002, "start_n": 874, "final_n": 874, "reduced_by": 0, "calls": 876, "wall": 517.6}

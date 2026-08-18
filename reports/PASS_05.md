@@ -66,3 +66,26 @@ than 510. Running now.
 7. C3-orbit minimisation — floor 517, both modes converging
 8. Orbit search on the 985-orbit pool — cost grows, signal does not
 9. **Large perturbations (62–299 points) — monotonically worse, 0/98 reached 510**
+
+## Fixpoint gap closed: the ENTIRE published corpus is a deletion fixpoint
+
+| graph | seeds | reduction | solver calls each |
+|---|---|---|---|
+| 610 | 3 | **0** | 612 |
+| 633 | 3 | **0** | 635 |
+| 803 | 3 | **0** | 805 |
+| 826 | 3 | **0** | 828 |
+| 874 | 3 | **0** | 876 |
+
+Combined with the earlier results for 510, 517, 529 and 553: **all nine published
+5-chromatic graphs are deletion fixpoints**, over 15 independent runs with three
+random deletion orders each and not one vertex removed anywhere.
+
+This matters because 826 and 874 ship with **no DRAT proof upstream**, which was
+the reason to suspect they had received less attention and might still be
+reducible. They are not. The assumption that Heule's corpus is fully minimised is
+now measured rather than inherited.
+
+Consequence: **every route that ends in "delete vertices from published material"
+is closed.** Any further progress must introduce points that are not in the
+published sets. That is precisely what the exhaustive substitution search tests.
