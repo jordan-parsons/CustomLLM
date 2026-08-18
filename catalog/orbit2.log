@@ -1,0 +1,4 @@
+rd0 P1b_510_C3.json mode=B seed=600002 n=510 orbits=184 calls=5863 wall=1200.3 BEST=510
+rd0 P1b_510_C3.json mode=A seed=600000 n=517 orbits=184 calls=5750 wall=1203.5 BEST=510
+rd0 P3_ncD6_deg3.json mode=A seed=600001 n=1804 orbits=985 calls=481 wall=1200.2 BEST=510
+rd0 P3_ncD6_deg3.json mode=B seed=600003 n=510 orbits=985 calls=6174 wall=1200.1 BEST=510
