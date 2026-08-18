@@ -59,3 +59,48 @@ have structurally different add-2 neighbourhoods.
 
 Honest framing: unlike pass 6, a negative result here will be statistical, not a
 proof. It will not close the rung, only fail to open it.
+
+## Add-2 result: no improvement (statistical, as forewarned)
+
+32 worker runs across all 9 distinct critical 510-vertex graphs, 242 add-2
+iterations, ~11.4 hours of worker time. **Every single iteration returned exactly
+510.** Distribution of per-run minima: {510: 32} — not one value above or below.
+
+| start graph | final n per run |
+|---|---|
+| orig510 | 510, 510, 510, 510 |
+| hit0–hit3 | 510, 510, 510, 510 (each) |
+| hit4–hit7 | 510, 510, 510 (each) |
+
+The uniformity is itself the interesting datum. In the add-1 regime, perturbations
+produced a spread (510 floor, tail to 519); in the large-perturbation regime, a wide
+spread (514–619). Here, adding exactly 2 points and re-minimising returns to 510
+**every time, from every one of nine structurally different critical graphs**. The
+minimiser adds 2 and deletes exactly those 2 back, without fail.
+
+As stated before the run: this is a statistical negative and does **not** close the
+add-2 rung. 242 samples against a space of ~112 million (w1,w2,v) configurations is
+a vanishing fraction. What it does show is that the add-2 neighbourhood offers no
+*easily reachable* descent — consistent with, but not proof of, the rung being closed.
+
+## Ladder status after pass 7
+
+| move | status | basis |
+|---|---|---|
+| add 0, delete 2 | **IMPOSSIBLE** | criticality of the 510 |
+| add 1, delete 3 | **IMPOSSIBLE** | proved corollary, exhaustive over the pool |
+| add 2, delete 4 | open; 242 samples, all returned 510 | statistical only |
+| add k>=3 | untouched | — |
+
+## Barren list (11)
+1. Single-vertex deletion from any published graph — all nine are fixpoints
+2. UNSAT-core reduction on minimised graphs — core is the whole vertex set
+3. MUS descent over the 2306-point pool encoding — ~50x per-call penalty
+4. Uniform-order basin hopping — cannot escape a critical incumbent
+5. UNSAT-core triage as a promise signal — 0 of 44 cores beat the incumbent
+6. Minkowski sums of 4-colourable blocks with H/J — still 4-colourable
+7. C3-orbit minimisation — floor 517, both modes converging
+8. Orbit search on the 985-orbit pool — cost grows, signal does not
+9. Large perturbations (62–299 points) — monotonically worse, 0/98 reached 510
+10. Single-point substitution — exhaustive; 8 new graphs, all critical
+11. **Add-2 from all nine critical graphs — 242/242 iterations returned exactly 510**

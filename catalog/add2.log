@@ -1,0 +1,35 @@
+pool built; 663 candidates survive the proved deg>=4 prune
+9 starting graphs (original + 8 substitution graphs)
+rd0 orig510 seed=1100000 n=510 iters=7 min_seen=510 wall=1238.0s BEST=510
+rd0 hit0 seed=1100001 n=510 iters=7 min_seen=510 wall=1246.1s BEST=510
+rd0 hit1 seed=1100002 n=510 iters=7 min_seen=510 wall=1248.0s BEST=510
+rd0 hit2 seed=1100003 n=510 iters=7 min_seen=510 wall=1305.6s BEST=510
+rd1 hit5 seed=1100006 n=510 iters=7 min_seen=510 wall=1263.1s BEST=510
+rd1 hit3 seed=1100004 n=510 iters=8 min_seen=510 wall=1339.6s BEST=510
+rd1 hit4 seed=1100005 n=510 iters=8 min_seen=510 wall=1349.8s BEST=510
+rd1 hit6 seed=1100007 n=510 iters=8 min_seen=510 wall=1371.7s BEST=510
+rd2 hit1 seed=1100011 n=510 iters=7 min_seen=510 wall=1203.5s BEST=510
+rd2 hit7 seed=1100008 n=510 iters=7 min_seen=510 wall=1207.4s BEST=510
+rd2 orig510 seed=1100009 n=510 iters=7 min_seen=510 wall=1218.7s BEST=510
+rd2 hit0 seed=1100010 n=510 iters=8 min_seen=510 wall=1343.3s BEST=510
+rd3 hit5 seed=1100015 n=510 iters=8 min_seen=510 wall=1349.9s BEST=510
+rd3 hit3 seed=1100013 n=510 iters=8 min_seen=510 wall=1351.9s BEST=510
+rd3 hit4 seed=1100014 n=510 iters=8 min_seen=510 wall=1355.9s BEST=510
+rd3 hit2 seed=1100012 n=510 iters=8 min_seen=510 wall=1365.2s BEST=510
+rd4 hit7 seed=1100017 n=510 iters=7 min_seen=510 wall=1211.4s BEST=510
+rd4 orig510 seed=1100018 n=510 iters=7 min_seen=510 wall=1225.3s BEST=510
+rd4 hit0 seed=1100019 n=510 iters=8 min_seen=510 wall=1340.8s BEST=510
+rd4 hit6 seed=1100016 n=510 iters=8 min_seen=510 wall=1352.1s BEST=510
+rd5 hit4 seed=1100023 n=510 iters=8 min_seen=510 wall=1309.8s BEST=510
+rd5 hit2 seed=1100021 n=510 iters=8 min_seen=510 wall=1358.1s BEST=510
+rd5 hit3 seed=1100022 n=510 iters=8 min_seen=510 wall=1360.5s BEST=510
+rd5 hit1 seed=1100020 n=510 iters=8 min_seen=510 wall=1363.4s BEST=510
+rd6 hit7 seed=1100026 n=510 iters=7 min_seen=510 wall=1231.4s BEST=510
+rd6 orig510 seed=1100027 n=510 iters=7 min_seen=510 wall=1260.5s BEST=510
+rd6 hit5 seed=1100024 n=510 iters=7 min_seen=510 wall=1266.1s BEST=510
+rd6 hit6 seed=1100025 n=510 iters=8 min_seen=510 wall=1374.0s BEST=510
+rd7 hit2 seed=1100030 n=510 iters=7 min_seen=510 wall=1212.1s BEST=510
+rd7 hit0 seed=1100028 n=510 iters=8 min_seen=510 wall=1285.3s BEST=510
+rd7 hit3 seed=1100031 n=510 iters=8 min_seen=510 wall=1308.7s BEST=510
+rd7 hit1 seed=1100029 n=510 iters=8 min_seen=510 wall=1337.8s BEST=510
+DONE best= 510
